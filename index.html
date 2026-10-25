@@ -1994,9 +1994,9 @@ body.multi-select-on #view-schedule .swipe-actions{display:none !important;}
 
 
 /* v1.6.5: fixed need tags, DDL mapping and receipt payment defaults */
-.order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;}
-.order-note-row textarea{flex:1;min-width:0;box-sizing:border-box;}
-.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;border:1px solid rgba(232,205,216,.9)!important;border-radius:14px!important;outline:none!important;box-shadow:none!important;}
+.order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;min-width:0;}
+.order-note-row textarea{flex:1 1 0;min-width:0;width:0;box-sizing:border-box;}
+.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;white-space:nowrap;max-width:86px;padding:8px 10px;box-sizing:border-box;border:1px solid var(--pink-200)!important;background:var(--pink-50)!important;color:var(--pink-700)!important;border-radius:12px!important;outline:none!important;box-shadow:none!important;font-size:12px;}
 .amount-qty-row{align-items:center;gap:14px;}
 .amount-group{flex:1;min-width:0;}
 .amount-group input#price{width:100%;box-sizing:border-box;}
@@ -2575,11 +2575,11 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 <style id="v165-prepay-refund-status">
 /* v1.6.5：预存退款状态与永久锁定标识 */
 .prepay-status-refunded,.prepay-status-archived{display:inline-flex;align-items:center;vertical-align:middle;margin-left:5px;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap;}
-.prepay-status-refunded{background:#3b3b3b;color:#fff;border:1px solid #777;}
+.prepay-status-refunded{background:var(--pink-100);color:var(--pink-700);border:1px solid var(--pink-300);}
 .prepay-status-archived{background:var(--pink-50);color:var(--text-sub);border:1px solid var(--card-border);}
-.prepay-card.refunded{border-color:#777!important;opacity:.9;}
+.prepay-card.refunded{border-color:var(--pink-300)!important;opacity:.9;}
 .prepay-locked-note{font-size:11px;color:var(--text-sub);padding:7px 2px;}
-#prepayList .prepay-account-actions button.refund{background:#5c5c5c!important;color:#fff!important;border-color:#5c5c5c!important;}
+#prepayList .prepay-account-actions button.refund{background:var(--pink-100)!important;color:var(--pink-700)!important;border:1px solid var(--pink-300)!important;}
 </style>
 </head>
 <body>
@@ -4913,11 +4913,7 @@ function buildOrderCard(o) {
 
   let priceHtml = '';
   if (hasPrice) {
-    if (o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))) {
-      priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.pricingSnapshot.calculatedTotal).toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
-    } else {
-      priceHtml += '<span class="order-price">' + uiMoney(uiMoney('¥' + Number(o.price).toFixed(2), 'income'), 'income') + '</span>';
-    }
+    priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.price).toFixed(2), 'income') + '</span>';
   } else {
     priceHtml += '<span class="order-price missing">未标价</span>';
   }
