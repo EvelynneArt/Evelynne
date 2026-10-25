@@ -2861,7 +2861,7 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
         <div class="amount-group">
           <input type="number" id="price" placeholder="0" autocomplete="off" step="0.01" inputmode="decimal" oninput="updatePrepayPanel()">
           <div class="price-chips">
-            <span class="price-chip manage-price" onclick="autoCalculateOrderPrice()">自动计价</span>
+            <span class="price-chip manage-price" onclick="openOrderPricing()">计价明细</span>
             <span class="price-chip clear" onclick="clearPrice()">清零</span>
           </div>
         </div>
@@ -3344,6 +3344,7 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 </div>
 
 
+<div class="modal center" id="orderPricingModal"><div class="modal-content"><div class="modal-header"><h2>订单计价明细</h2><button class="modal-close" onclick="closeOrderPricing()">×</button></div><div id="orderPricingBody"></div><div class="modal-actions"><button class="btn-cancel" onclick="closeOrderPricing()">取消</button><button class="btn-save" onclick="applyOrderPricing()">应用计价</button></div></div></div>
 <div class="modal" id="receiptModal"><div class="modal-content"><div class="modal-header receipt-modal-header"><h2 id="receiptTitle">工作小票</h2><div class="receipt-head-actions"><button type="button" class="receipt-export-top" onclick="downloadReceiptPng()">导出 PNG</button><button class="modal-close" aria-label="关闭小票" onclick="closeReceipt()">×</button></div></div><div id="receiptControls"></div><div id="receiptPaper" class="receipt-paper"></div><div class="modal-actions receipt-modal-actions"><button class="btn-cancel" onclick="closeReceipt()">关闭</button><button class="btn-save" onclick="downloadReceiptPng()">导出 PNG</button></div></div></div>
 <style>
 #view-priceSuite .section-header{margin:4px 2px 14px!important;padding:0 2px 10px;border-bottom:1px solid var(--card-border)}
@@ -7931,35 +7932,44 @@ b.innerHTML='<div class="stat-block ps-panel"><div class="ps-panel-head"><h4>基
 window.setPriceCalcMode=function(v){cfg.mode='all';write();renderSuite();};
 window.addPriceEntry=function(type){var n=document.getElementById(type==='packages'?'psNewPack':'psNewItem'),p=document.getElementById(type==='packages'?'psNewPackPrice':'psNewItemPrice');var name=(n.value||'').trim(),price=Number(p.value);if(!name||!Number.isFinite(price)||price<0){toast('请填写名称和有效价格');return;}var entry={id:'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,6),name:name,price:price,active:true,method:type==='packages'?'perImage':'perOrder',typeId:'',needs:[],isDefault:false};if(type==='packages'){var t=findTypeByName(name);if(!t){t={id:'custom_'+Date.now()+'_'+Math.random().toString(16).slice(2),name:name,color:'var(--pink-600)'};if(typeof customTypes!=='undefined'){customTypes.push(t);if(typeof saveData==='function')saveData();}}entry.typeId=t?t.id:'';if(!cfg.packages.some(function(z){return String(z.typeId||'')===String(entry.typeId)&&entry.typeId;}))entry.isDefault=true;}cfg[type].push(entry);write();renderSuite();};
 window.editPriceEntry=function(type,id,key,val){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(key==='price'){var n=Number(val);if(!Number.isFinite(n)||n<0){toast('价格不能小于 0');renderSuite();return;}x.price=n;}else if(key==='mode'){x.mode=val==='all'||val==='basePlus'?val:'';}else if(key==='method'){x.method=type==='packages'?'perImage':(val==='perImage'?'perImage':'perOrder');}else if(key==='calcMode'){x.calcMode=['all','basePlus'].indexOf(val)>=0?val:'global';}else if(key==='typeId'){x.typeId=String(val||'');}else if(key==='isDefault'){x.isDefault=!!val;if(x.isDefault)cfg.packages.forEach(function(z){if(z.id!==id)z.isDefault=false;});}else{x.name=String(val||'').trim();}write();if(key==='isDefault'||key==='calcMode')renderSuite();if(typeof toast==='function')toast('已保存');};
-window.previewOrderPrice=function(){ /* 标签/需求变更不自动覆盖用户金额。 */ };
+window.previewOrderPrice=function(tagId,needs,qty){
+  var priceEl=document.getElementById('price'); if(!priceEl)return;
+  var existing=(typeof editingOrderId!=='undefined'&&editingOrderId&&typeof orders!=='undefined')?orders.find(function(o){return o.id===editingOrderId;}):null;
+  if(existing || window.manualPriceTouched || (window.pendingPricingSnapshot&&window.pendingPricingSnapshot.manual))return;
+  var matches=active(cfg.packages).filter(function(p){return String(p.typeId||'')===String(tagId||'');});
+  var pack=matches.length===1?matches[0]:(matches.find(function(p){return p.isDefault;})||null);
+  var ns=Array.isArray(needs)?needs:[];
+  var its=active(cfg.items).filter(function(it){return Array.isArray(it.needs)&&it.needs.some(function(n){return ns.indexOf(n)>-1;});});
+  if(!pack&&!its.length){priceEl.value='';return;}
+  var q=Math.max(1,parseInt(qty,10)||1), total=calcOrderTotal(pack,its,q);
+  priceEl.value=(total/q).toFixed(2).replace(/\.00$/,'');
+  window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?Number(pack.price)||0:0,packageMethod:'perImage',items:its.map(function(x){var m='perImage';return {id:x.id,name:x.name,unitPrice:Number(x.price)||0,method:m,qty:m==='perImage'?q:1,amount:(Number(x.price)||0)*(m==='perImage'?q:1),kind:'item'};}),charges:[],quantity:q,calculatedTotal:total,manual:false,autoMatched:true,sourceTag:String(tagId||''),sourceNeeds:ns.slice(),appliedAt:Date.now()};
+  if(pack)window.pendingPricingSnapshot.charges.push({id:pack.id,name:pack.name,unitPrice:Number(pack.price)||0,method:'perImage',qty:q,amount:(Number(pack.price)||0)*q,kind:'package'});
+  window.pendingPricingSnapshot.charges=window.pendingPricingSnapshot.charges.concat(window.pendingPricingSnapshot.items);
+};
+window.previewOrderPrice=function(tagId,needs,qty){
+ var priceEl=document.getElementById('price');if(!priceEl)return;
+ var existing=(typeof editingOrderId!=='undefined'&&editingOrderId&&typeof orders!=='undefined')?orders.find(function(o){return o.id===editingOrderId;}):null;
+ if(existing||window.manualPriceTouched||(window.pendingPricingSnapshot&&window.pendingPricingSnapshot.manual))return;
+ var matched=active(cfg.packages).filter(function(p){return String(p.typeId||'')===String(tagId||'');});
+ var pack=matched.length===1?matched[0]:(matched.find(function(p){return p.isDefault;})||null);
+ var ns=Array.isArray(needs)?needs:[];var its=active(cfg.items).filter(function(it){return Array.isArray(it.needs)&&it.needs.some(function(n){return ns.indexOf(n)>-1;});});
+ if(!pack&&!its.length){priceEl.value='';window.pendingPricingSnapshot=null;return;}
+ var q=Math.max(1,parseInt(qty,10)||1),total=calcOrderTotal(pack,its,q);priceEl.value=(total/q).toFixed(2).replace(/\.00$/,'');
+ var charges=[];if(pack)charges.push({id:pack.id,name:pack.name,unitPrice:Number(pack.price)||0,method:'perImage',qty:q,amount:(Number(pack.price)||0)*q,kind:'package'});
+ its.forEach(function(it){var m='perImage';charges.push({id:it.id,name:it.name,unitPrice:Number(it.price)||0,method:m,qty:m==='perImage'?q:1,amount:(Number(it.price)||0)*(m==='perImage'?q:1),kind:'item'});});
+ window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?Number(pack.price)||0:0,packageMethod:'perImage',items:charges.filter(function(c){return c.kind==='item';}),charges:charges,quantity:q,calculatedTotal:total,manual:false,autoMatched:true,sourceTag:String(tagId||''),sourceNeeds:ns.slice(),appliedAt:Date.now()};
 };
 window.editPriceNeed=function(id,need,on){var x=cfg.items.find(function(z){return z.id===id;});if(!x)return;x.needs=Array.isArray(x.needs)?x.needs:[];x.needs=x.needs.filter(function(n){return n!==need;});if(on)x.needs.push(need);write();};
 window.removePriceEntry=function(type,id){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(!confirm('确定停用「'+x.name+'」吗？停用后不参与新订单计价，历史订单不受影响。'))return;x.active=false;write();renderSuite();};
 window.togglePriceEntry=async function(type,id){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(x.active!==false){var ok=await uiConfirm('确定停用「'+x.name+'」吗？停用后不参与新订单计价，历史订单不受影响。',{okText:'停用',cancelText:'取消'});if(!ok)return;x.active=false;}else{x.active=true;}write();renderSuite();};
 function active(list){return list.filter(function(x){return x.active!==false;});}
-window.autoCalculateOrderPrice=function(){
- var tagId=(typeof selectedTypeIds!=='undefined'&&selectedTypeIds&&selectedTypeIds.length)?selectedTypeIds[0]:'';
- var needs=[];
- if(typeof selectedNeedUrgent!=='undefined'&&selectedNeedUrgent)needs.push('urgent');
- if(typeof selectedNeedBase!=='undefined'&&selectedNeedBase)needs.push('base');
- if(typeof selectedNeedIds!=='undefined'&&Array.isArray(selectedNeedIds))needs=needs.concat(selectedNeedIds);
- if(typeof getSelectedNeedIds==='function'){try{needs=getSelectedNeedIds()||needs;}catch(e){}}
- var q=Math.max(1,parseInt(typeof selectedQuantity!=='undefined'?selectedQuantity:1,10)||1);
- var matched=active(cfg.packages).filter(function(p){return p.typeId&&String(p.typeId)===String(tagId||'');});
- var pack=matched.length===1?matched[0]:(matched.find(function(p){return p.isDefault;})||null);
- if(matched.length>1&&!pack){toast('当前标签匹配多个套餐，请先在价格表中设置默认套餐');return;}
- var chosen=active(cfg.items).filter(function(it){return Array.isArray(it.needs)&&it.needs.some(function(n){return needs.indexOf(n)>-1;});});
- if(!pack&&!chosen.length){toast('当前标签和需求没有匹配的价格，请检查价格表');return;}
- var charges=[];
- if(pack)charges.push({id:pack.id,name:pack.name,unitPrice:Number(pack.price)||0,method:'perImage',qty:q,amount:(Number(pack.price)||0)*q,kind:'package'});
- chosen.forEach(function(it){var method=cfg.mode==='all'?'perImage':'perOrder';charges.push({id:it.id,name:it.name,unitPrice:Number(it.price)||0,method:method,qty:method==='perImage'?q:1,amount:(Number(it.price)||0)*(method==='perImage'?q:1),kind:'item'});});
- var total=calcOrderTotal(pack,chosen,q), price=document.getElementById('price');if(!price)return;
- price.value=(total/q).toFixed(2).replace(/\.00$/,'');
- window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?Number(pack.price)||0:0,packageMethod:pack?(pack.method||'perImage'):'',items:charges.filter(function(x){return x.kind==='item';}),charges:charges,quantity:q,calculatedTotal:total,manual:false,manualSelection:true,autoMatched:true,sourceTag:String(tagId||''),sourceNeeds:needs.slice(),appliedAt:Date.now()};
- window.manualPriceTouched=false;if(typeof updatePrepayPanel==='function')updatePrepayPanel();if(window.markOrderFormDirty)window.markOrderFormDirty();toast('已按当前标签和需求重新计价');
-};
+window.openOrderPricing=function(){draft={packageId:'',items:{},manual:false};var o=(typeof editingOrderId!=='undefined'&&editingOrderId&&typeof orders!=='undefined')?orders.find(function(x){return x.id===editingOrderId;}):null;if(o&&o.pricingSnapshot){draft.packageId=o.pricingSnapshot.packageId||'';(o.pricingSnapshot.items||[]).forEach(function(x){draft.items[x.id]=1;});}var b=document.getElementById('orderPricingBody');var html='<div class="ps-note">基础价格与额外需求统一按「全部消费 × 张数」计算。</div><section class="price-suite-section"><h3>基础价格（可不选）</h3><select id="opPackage" class="ps-select" onchange="renderOrderPricing()"><option value="">不使用套餐</option>'+active(cfg.packages).map(function(x){return '<option value="'+x.id+'" '+(draft.packageId===x.id?'selected':'')+'>'+esc(x.name)+' · '+money(x.price)+' / '+(x.method==='perOrder'?'单':'张')+'</option>';}).join('')+'</select></section><section class="price-suite-section"><h3>额外需求</h3>'+active(cfg.items).map(function(x){return '<label class="ps-choice"><input type="checkbox" data-item="'+x.id+'" '+(draft.items[x.id]?'checked':'')+' onchange="changeOrderPricingItem(\''+x.id+'\',this.checked)"><span><b>'+esc(x.name)+'</b><small>'+money(x.price)+' / 张'+'</small></span></label>';}).join('')+'<div id="opCalc" class="ps-note"></div></section>';b.innerHTML=html;var m=document.getElementById('orderPricingModal');m.classList.add('show');document.body.classList.add('lock');renderOrderPricing();};
 function calcOrderTotal(pack, chosenItems, q){var base=pack?(Number(pack.price)||0):0;var extra=0;chosenItems.forEach(function(x){extra+=(Number(x.price)||0);});return (base+extra)*Math.max(1,parseInt(q,10)||1);}
-
+window.renderOrderPricing=function(){var sel=document.getElementById('opPackage');if(sel)draft.packageId=sel.value;var pack=active(cfg.packages).find(function(x){return x.id===draft.packageId;});var q=(typeof selectedQuantity!=='undefined'&&selectedQuantity)||1,chosen=active(cfg.items).filter(function(x){return !!draft.items[x.id];}),total=calcOrderTotal(pack,chosen,q),mode='all';var el=document.getElementById('opCalc');if(el)el.textContent='全部消费 × '+q+' 张 · 计价总额 '+money(total);};
+window.changeOrderPricingItem=function(id,on){if(on)draft.items[id]=1;else delete draft.items[id];renderOrderPricing();};window.changeOrderPricingQty=function(id,v){draft.items[id]=1;renderOrderPricing();};
+window.closeOrderPricing=function(){var m=document.getElementById('orderPricingModal');if(m)m.classList.remove('show');if(!document.querySelector('.modal.show'))document.body.classList.remove('lock');};
+window.applyOrderPricing=function(){var pack=active(cfg.packages).find(function(x){return x.id===draft.packageId;});var q=(typeof selectedQuantity!=='undefined'&&selectedQuantity)||1,charges=[],total=0,chosenItems=active(cfg.items).filter(function(x){return !!draft.items[x.id];}),calcMode=cfg.mode;if(pack){var pm='perImage',pa=(Number(pack.price)||0)*q;charges.push({id:pack.id,name:pack.name,unitPrice:Number(pack.price)||0,method:pm,qty:q,amount:pa,kind:'package'});}chosenItems.forEach(function(x){var m='perImage',a=(Number(x.price)||0)*q;charges.push({id:x.id,name:x.name,unitPrice:Number(x.price)||0,method:m,qty:m==='perImage'?q:1,amount:a,kind:'item'});});total=calcOrderTotal(pack,chosenItems,q);var price=document.getElementById('price');if(price){price.value=(q?total/q:total).toFixed(2).replace(/\.00$/,'');if(typeof updatePrepayPanel==='function')updatePrepayPanel();}window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?Number(pack.price)||0:0,packageMethod:pack?(pack.method||'perImage'):'',items:charges.filter(function(x){return x.kind==='item';}),charges:charges,quantity:q,calculatedTotal:total,manual:false,manualSelection:true,appliedAt:Date.now()};window.markOrderFormDirty&&markOrderFormDirty();closeOrderPricing();toast('计价已应用，保存订单后生效');};
 
 /* 新建订单选择标签/需求后即时预览金额；数量变化时同步预览。历史订单和手动改价不被覆盖。 */
 document.addEventListener('change',function(ev){var t=ev.target;if(!t)return;if(t.id==='quantity'||t.id==='orderQuantity'||t.name==='quantity'){if(typeof window.previewOrderPrice==='function')window.previewOrderPrice((selectedTypeIds||[])[0],getSelectedNeedIds(),selectedQuantity||t.value||1);}});
@@ -7984,7 +7994,14 @@ window.saveOrder=function(){
     total=calcOrderTotal(pack,its,qty);
     return {mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?Number(pack.price)||0:0,packageMethod:pack?pack.method||'perImage':'',items:charges.filter(function(c){return c.kind==='item';}),charges:charges,quantity:qty,calculatedTotal:total,manual:false,autoMatched:true,sourceTag:String(tagId||''),sourceNeeds:needList.slice(),appliedAt:Date.now()};
   }
-
+  if(before&&!snap&&!window.manualPriceTouched&&before.pricingSnapshot&&!before.pricingSnapshot.manual&&!before.pricingSnapshot.manualSelection){
+    var oldTag=String((before.typeIds&&before.typeIds[0])||before.typeId||''), newTag=String((typeof selectedTypeIds!=='undefined'&&selectedTypeIds[0])||'');
+    var oldNeeds=Array.isArray(before.needIds)?before.needIds.slice():[];if(!oldNeeds.length){if(before.status==='加急')oldNeeds.push('urgent');if(before.hasBase)oldNeeds.push('base');}
+    var newNeeds=(typeof selectedNeedUrgent!=='undefined'&&selectedNeedUrgent?['urgent']:[]).concat(typeof selectedNeedBase!=='undefined'&&selectedNeedBase?['base']:[],typeof selectedNeedIds!=='undefined'?selectedNeedIds:[]);
+    var qtyNow=(typeof selectedQuantity!=='undefined'&&selectedQuantity)||1;
+    var changed=oldTag!==newTag||oldNeeds.slice().sort().join(',')!==newNeeds.slice().sort().join(',')||qtyNow!==(Number(before.quantity)||1);
+    if(changed){var recalculated=makeRuleSnapshot(newTag,newNeeds,qtyNow);if(recalculated&&recalculated.ambiguous){toast('该标签匹配多个套餐且没有默认套餐，请先在计价明细中选择');window.openOrderPricing();return;}if(recalculated){snap=recalculated;window.pendingPricingSnapshot=snap;var priceForRules=document.getElementById('price');if(priceForRules)priceForRules.value=(qtyNow?recalculated.calculatedTotal/qtyNow:recalculated.calculatedTotal).toFixed(2).replace(/\.00$/,'');}else{toast('当前标签/需求已不匹配价格表，原收费明细已保留，请检查订单');}}
+  }
   if(!snap&&!before){
     var priceEl=document.getElementById('price');
     var amountInput=priceEl?String(priceEl.value||'').trim():'';
