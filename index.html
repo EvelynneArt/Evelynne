@@ -7999,7 +7999,7 @@ window.downloadReceiptPng=function(){
       if(!content)throw new Error('找不到小票排版容器');
       cloneRoot=document.createElement('div');
       cloneRoot.id='receiptModal';cloneRoot.className='modal show';
-      cloneRoot.style.cssText='display:block!important;position:fixed!important;left:-100000px!important;top:0!important;width:100vw!important;height:auto!important;max-height:none!important;overflow:visible!important;z-index:-1!important;background:transparent!important;';
+      cloneRoot.style.cssText='display:block!important;position:fixed!important;left:0!important;top:0!important;width:100vw!important;height:auto!important;max-height:none!important;overflow:visible!important;z-index:-1!important;pointer-events:none!important;background:transparent!important;';
       var clonedContent=content.cloneNode(true);
       clonedContent.style.cssText+=';width:'+Math.max(280,Math.min(760,content.getBoundingClientRect().width))+'px!important;max-width:none!important;max-height:none!important;height:auto!important;overflow:visible!important;display:block!important;position:static!important;margin:0!important;';
       var clonedPaper=clonedContent.querySelector('#receiptPaper');
