@@ -7966,7 +7966,7 @@ window.downloadReceiptPng=function(){
   var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   try{
     /* iOS 必须在点击事件同步打开备用页，避免异步生成图片后被弹窗拦截。 */
-    if(isIOS){try{fallbackTab=window.open('about:blank','_blank');}catch(e){fallbackTab=null;}}
+    /* iOS Safari 切换到 about:blank 后可能暂停原页面的异步渲染；改为在当前页面显示图片预览，不再预开空白标签页。 */
     if(!paper.textContent.trim()){if(fallbackTab)fallbackTab.close();if(typeof toast==='function')toast('小票内容为空，暂时无法导出');return;}
     function loadHtml2Canvas(){
       if(window.html2canvas)return Promise.resolve(window.html2canvas);
@@ -8018,6 +8018,32 @@ window.downloadReceiptPng=function(){
         var file=null;try{file=new File([blob],filename,{type:'image/png'});}catch(e){}
         window.__receiptPngFile=file;
         var opened=false;
+        if(isIOS){
+          var oldPreview=document.getElementById('receiptPngPreviewOverlay');
+          if(oldPreview)oldPreview.remove();
+          var preview=document.createElement('div');
+          preview.id='receiptPngPreviewOverlay';
+          preview.style.cssText='position:fixed;inset:0;z-index:2147483647;overflow:auto;background:#fff8fb;padding:18px;box-sizing:border-box;text-align:center;color:#594650;font:15px -apple-system,BlinkMacSystemFont,sans-serif;';
+          var close=document.createElement('button');
+          close.type='button';close.textContent='返回小票';
+          close.style.cssText='border:0;border-radius:12px;padding:11px 18px;background:#eab7cc;color:#63394c;font-size:15px;font-weight:700;margin:8px;';
+          close.onclick=function(){preview.remove();};
+          var share=document.createElement('button');
+          share.type='button';share.textContent='分享 / 保存图片';
+          share.style.cssText=close.style.cssText;
+          share.onclick=function(){window.__receiptShareFromPreview();};
+          var note=document.createElement('p');
+          note.textContent='PNG 已生成。可点击“分享 / 保存图片”并选择“存储图像”，也可以长按下方图片保存。';
+          note.style.cssText='line-height:1.6;margin:12px auto;';
+          var img=document.createElement('img');
+          img.alt='工作小票 PNG';img.src=blobUrl;
+          img.style.cssText='display:block;width:100%;height:auto;max-width:760px;margin:14px auto;background:#fff;';
+          var name=document.createElement('p');name.textContent='文件名：'+filename;
+          preview.appendChild(close);preview.appendChild(share);preview.appendChild(note);preview.appendChild(img);preview.appendChild(name);
+          document.body.appendChild(preview);
+          if(typeof toast==='function')toast('PNG 已生成，请在页面中长按图片或使用分享按钮保存');
+          return;
+        }
         if(fallbackTab){
           try{
             fallbackTab.document.open();
