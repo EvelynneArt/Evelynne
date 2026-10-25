@@ -4338,7 +4338,17 @@ function switchView(name) {
     try { renderIncome(); } catch (e) {}
   }
   if (name === 'priceSuite') {
-    try { if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage(); else if (typeof window.openPriceSuite === 'function') window.openPriceSuite(); } catch (e) { console.error('价格表页面渲染失败', e); }
+    var priceBody = $('priceSuiteBody');
+    try {
+      if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage();
+      else if (typeof window.openPriceSuite === 'function') window.openPriceSuite();
+      if (priceBody && !priceBody.innerHTML.trim()) {
+        throw new Error('价格表渲染后内容为空');
+      }
+    } catch (e) {
+      console.error('价格表页面渲染失败', e);
+      if (priceBody) priceBody.innerHTML = '<div class="stat-block ps-panel"><h4>价格表暂时无法显示</h4><p style="color:var(--text-sub);line-height:1.7">页面渲染遇到异常。你的价格数据没有被清除，请刷新页面后重试。</p><button type="button" class="btn-save" onclick="if(window.renderPriceSuitePage){window.renderPriceSuitePage()}">重新加载价格表</button></div>';
+    }
   }
 }
 
@@ -7908,7 +7918,7 @@ var draft={packageId:'',items:{},manual:false};
 var activeReceipt={kind:'month',key:''};var receiptBrand={title:'DIY',subtitle:'',blessing:'May every little joy find its way to you.'};try{var rb=JSON.parse(localStorage.getItem('ryeong_receipt_brand_v1')||'null');if(rb)receiptBrand=Object.assign(receiptBrand,rb);}catch(e){}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function money(v){return '¥'+(Number(v)||0).toFixed(2);}
-function read(){try{var x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&typeof x==='object'){cfg.mode='all';cfg.packages=Array.isArray(x.packages)?x.packages:[];cfg.items=Array.isArray(x.items)?x.items:[];}}catch(e){}}
+function read(){try{var x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&typeof x==='object'){cfg.mode='all';cfg.packages=Array.isArray(x.packages)?x.packages.filter(function(v){return v&&typeof v==='object'&&!Array.isArray(v);}):[];cfg.items=Array.isArray(x.items)?x.items.filter(function(v){return v&&typeof v==='object'&&!Array.isArray(v);}):[];}}catch(e){cfg.packages=[];cfg.items=[];}}
 function write(){cfg.mode='all';try{localStorage.setItem(KEY,JSON.stringify(cfg));}catch(e){if(typeof toast==='function')toast('价格表保存失败，可能是存储空间不足');}}
 read();
 function findTypeByName(name){var n=String(name||'').trim();return (typeof getAllTypes==='function'?getAllTypes():[]).find(function(t){return String(t.name||'').trim()===n;})||null;}
