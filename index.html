@@ -2416,7 +2416,7 @@ html[data-theme-default="1"] div.danger.settings-row{border-color:rgb(229, 72, 7
 .prepay-edit-impact{margin:-2px 0 10px;padding:8px 10px;border:1px dashed var(--pink-200);border-radius:9px;background:var(--pink-50);color:var(--text-sub);font-size:11.5px;line-height:1.55}
 .prepay-edit-impact strong{color:var(--text-main)}
 .prepay-card.archived{opacity:.72}
-.prepay-card.archived .prepay-client::after{content:'已归档';margin-left:6px;font-size:10px;font-weight:600;color:var(--text-light);border:1px solid var(--card-border);border-radius:99px;padding:1px 5px}
+.prepay-card.archived:not(.refunded) .prepay-client::after{content:'已归档';margin-left:6px;font-size:10px;font-weight:600;color:var(--text-light);border:1px solid var(--card-border);border-radius:99px;padding:1px 5px}
 .prepay-account-actions .archive{background:var(--normal-bg-1);color:var(--normal-text);border:1px solid var(--normal-border)}
 .prepay-account-actions .restore{background:var(--pink-50);color:var(--pink-700);border:1px solid var(--pink-200)}
 
@@ -3464,7 +3464,7 @@ const PASTEL_THEMES = [
   { id:'pastel-tianlan', name:'云雾蓝', group:'pastel', hueName:'云雾蓝', swatch:'#B7C9D9', vars:{'bg-base':'#f7fafc','pink-500':'#B7C9D9','text-main':'#394d60','text-sub':'#6d8498','text-light':'#b4c1cc','card-bg':'#ffffff','input-bg':'#ffffff'} },
   { id:'pastel-wuzi', name:'奶雾紫', group:'pastel', hueName:'奶雾紫', swatch:'#c7b3df', vars:{'bg-base':'#faf8fc','pink-500':'#c7b3df','text-main':'#493d58','text-sub':'#7f6d92','text-light':'#bdb1c9','card-bg':'#ffffff','input-bg':'#ffffff'} }
   ,
-  { id:'theme-blackwhite-light', name:'黑白灰·浅色', group:'pastel', hueName:'黑白灰·浅色', swatch:'#9a9a9a', vars:{
+  { id:'theme-blackwhite-light', name:'黑白灰', group:'blackwhite', hueName:'黑白灰', swatch:'#9a9a9a', vars:{
     'bg-base':'#f4f4f4','card-bg':'#ffffff','card-bg-alpha':'rgba(255,255,255,0.96)','input-bg':'#fafafa',
     'pink-50':'#f7f7f7','pink-100':'#eeeeee','pink-200':'#dedede','pink-300':'#c8c8c8','pink-400':'#a8a8a8',
     'pink-500':'#777777','pink-600':'#555555','pink-700':'#333333',
@@ -3512,7 +3512,7 @@ const DARK_THEMES = [
     'accent-blue-1':'#5c1f28','accent-blue-2':'#7a2b36'
   } }
   ,
-  { id:'theme-blackwhite-dark', name:'黑白灰·深色', group:'dark', hueName:'黑白灰·深色', swatch:'#777777', vars:{
+  { id:'theme-blackwhite-dark', name:'黑白灰', group:'blackwhite', hueName:'黑白灰', swatch:'#777777', vars:{
     'bg-base':'#171717','card-bg':'#242424','card-bg-alpha':'rgba(36,36,36,0.96)','input-bg':'#1c1c1c',
     'pink-50':'#202020','pink-100':'#292929','pink-200':'#383838','pink-300':'#505050','pink-400':'#777777',
     'pink-500':'#929292','pink-600':'#bdbdbd','pink-700':'#eeeeee',
@@ -3529,6 +3529,7 @@ const THEME_GROUPS = [
   { key:'morandi', label:'莫兰迪' },
   { key:'pastel', label:'浅色系' },
   { key:'dark', label:'深色系' },
+  { key:'blackwhite', label:'黑白灰' },
   { key:'diy', label:'我的 DIY' }
 ];
 
@@ -3652,7 +3653,7 @@ function buildThemeCSS(vars) {
     '.filter-tag{color:var(--text-sub)}' +
     '.theme-live-preview,.theme-diy-preview{background:var(--bg-base)}' +
     /* 头像、顶栏、资料卡及选择态统一读取当前主题变量，不保留硬编码粉色光晕。 */ 
-    '.avatar-preview{background:linear-gradient(135deg,var(--pink-100),var(--pink-200))!important;box-shadow:0 6px 16px var(--theme-shadow),inset 0 1px 0 var(--card-bg)!important}' +
+    '.avatar-preview{background:linear-gradient(135deg,var(--pink-100),var(--pink-200))!important;box-shadow:0 6px 16px var(--theme-shadow),inset 0 1px 0 var(--card-bg)!important}' +\n    '.header-avatar,.avatar-preview,.avatar-cell,.avatar-shape-picker button{box-shadow:0 4px 14px var(--theme-shadow)!important}' +
     '.avatar-cell{background:var(--pink-50)!important;border-color:var(--card-border)}' +
     '.app-header{background:var(--header-bg)!important;box-shadow:0 4px 18px var(--theme-shadow-soft)}' +
     '.profile-card,.profile-panel,.user-profile-card,.settings-profile-card{background:var(--card-bg)!important;border-color:var(--card-border)!important;box-shadow:0 6px 20px var(--theme-shadow-soft)!important}' +
@@ -6260,7 +6261,7 @@ function savePrepayment() {
 }
 
 
-function rechargePrepayAccount(clientId) {
+function rechargePrepayAccount(clientId) {\n  const existingRefunded=getPrepayAccount(clientId,false); if(existingRefunded&&existingRefunded.refunded){toast('该账户已退款并永久锁定，不能再次交易');return;}
   const id = String(clientId || '').trim();
   if (!id) return;
   // "充值"走的是新增流水这条纯加法路径（savePrepayment 里 !editId 分支），
@@ -6293,6 +6294,26 @@ function togglePrepayRecordCountInIncome(recordId) {
   try { renderIncome(); } catch (e) {}
   try { renderWorkspace(); } catch (e) {}
   toast(log.countInIncome ? '这笔预存已改为「计入本月收入」✓' : '这笔预存已改为「不计入本月收入」');
+}
+
+async function refundPrepayAccount(clientId) {
+  const id=String(clientId||'').trim(); if(!id)return;
+  const account=getPrepayAccount(id,false); if(!account){toast('找不到这个预存单主');return;}
+  if(account.refunded){toast('这个账户已经退款，不能再次申请');return;}
+  const balance=Math.max(0,Number(account.balance)||0);
+  if(balance<=0){toast('当前余额为 ¥0.00，无法申请退款');return;}
+  const logs=prepayLedger.filter(function(l){return l.clientId===id;});
+  const paid=logs.reduce(function(sum,l){return sum+(l.type==='recharge'?(Number(l.paidAmount!=null?l.paidAmount:l.amount)||0):0);},0);
+  const credited=logs.reduce(function(sum,l){return sum+(l.type==='recharge'?(Number(l.amount)||0):0);},0);
+  if(credited<=0||paid<=0){toast('未找到有效充值实付记录，无法计算退款金额');return;}
+  const refundAmount=Math.round(balance*Math.min(1,paid/credited)*100)/100;
+  const ok=await uiConfirm('确认给「'+id+'」办理退款？\\n当前预存余额：¥'+balance.toFixed(2)+'\\n按累计实付÷累计到账比例计算，预计退款：¥'+refundAmount.toFixed(2)+'。\\n确认后余额清零、账户永久锁定，不能再次充值或退款。此操作不可撤销。',{okText:'确认退款'});
+  if(!ok)return;
+  addPrepayLedger(id,-balance,'adjust','退款清零（退款金额 ¥'+refundAmount.toFixed(2)+'）','');
+  account.balance=0; account.refunded=true; account.archived=true;
+  account.refundedAt=Date.now(); account.refundAmount=refundAmount; account.updatedAt=Date.now();
+  prepayLedger.unshift({id:uid().replace(/^o_/,'p_'),clientId:id,amount:-refundAmount,type:'account_refund',note:'账户退款 ¥'+refundAmount.toFixed(2),orderId:'',paidAmount:0,giftAmount:0,createdAt:Date.now()});
+  saveData(); renderPrepay(); toast('已退款，账户已永久锁定');
 }
 
 async function clearPrepayBalance(clientId) {
@@ -6452,9 +6473,10 @@ function renderPrepay() {
         const isRefund = l.type === 'refund';
         const isAdjust = l.type === 'adjust';
         const isRecharge = l.type === 'recharge';
-        const label = isDeduct ? '扣预存' : (isRefund ? '订单退回' : (isAdjust ? '金额调整' : '增加预存'));
-        const sign = (isDeduct || (isAdjust && Number(l.amount) < 0)) ? '-' : '+';
-        const cls = isDeduct ? 'deduct' : (isRefund ? 'refund' : (isAdjust ? 'refund' : 'recharge'));
+        const isAccountRefund = l.type === 'account_refund';
+        const label = isAccountRefund ? '账户退款' : (isDeduct ? '扣预存' : (isRefund ? '订单退回' : (isAdjust ? '金额调整' : '增加预存')));
+        const sign = (isDeduct || isAccountRefund || (isAdjust && Number(l.amount) < 0)) ? '-' : '+';
+        const cls = isDeduct ? 'deduct' : (isRefund || isAccountRefund ? 'refund' : (isAdjust ? 'refund' : 'recharge'));
         const date = new Date(l.createdAt || Date.now());
         const dateText = date.getMonth() + 1 + '/' + date.getDate();
         const counted = l.countInIncome !== false;
@@ -6489,6 +6511,7 @@ function renderPrepay() {
       (a.archived
         ? '<button type="button" class="restore" onclick="togglePrepayArchived(\'' + escapeHtml(a.clientId) + '\')">恢复</button>'
         : '<button type="button" class="recharge" onclick="rechargePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">充值</button>' +
+          '<button type="button" class="refund-account" onclick="refundPrepayAccount(\\'' + escapeHtml(a.clientId) + '\\')">申请退款</button>' +
           '<button type="button" class="clear" onclick="clearPrepayBalance(\'' + escapeHtml(a.clientId) + '\')">清空</button>' +
           '<button type="button" class="archive" onclick="deletePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">删除/归档</button>') +
       '</div>' +
