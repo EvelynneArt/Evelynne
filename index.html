@@ -4025,6 +4025,7 @@ function loadProfile() {
     profile.avatarData = saved.avatarData || '';
     profile.avatarShape = ['rounded','circle'].indexOf(saved.avatarShape) > -1 ? saved.avatarShape : 'rounded';
     profile.hiddenNavs = Array.isArray(saved.hiddenNavs) ? saved.hiddenNavs.filter(function (k) { return k !== 'workspace'; }) : [];
+    profile.navOrder = Array.isArray(saved.navOrder) ? saved.navOrder.slice() : null;
   }
 }
 
@@ -6629,7 +6630,7 @@ function toggleNavVisible(key) {
 
 function applyNavVisibility() {
   const nav = document.querySelector('.bottom-nav');
-  const savedOrder=lsGet('ryeong_nav_order_v1',null); const order=Array.isArray(savedOrder)&&savedOrder.length?savedOrder:(Array.isArray(profile.navOrder)?profile.navOrder:NAV_ITEMS.map(function(n){return n.key;}));
+  const order=Array.isArray(profile.navOrder)&&profile.navOrder.length?profile.navOrder:NAV_ITEMS.map(function(n){return n.key;});
   if(nav){ order.forEach(function(key){var el=nav.querySelector('.nav-item[data-view=\"'+key+'\"]');if(el)nav.appendChild(el);}); }
   const hidden = Array.isArray(profile.hiddenNavs) ? profile.hiddenNavs : [];
   NAV_ITEMS.forEach(function (n) {
@@ -7701,7 +7702,7 @@ function uiSetNum(k,v){const d=navSettingsDraft;if(!d)return;d[k]=Math.max(0,Num
 (function(){
   const _s=window.saveNavSettings;
   window.openNavSettings=function(){
-    navSettingsDraft={hiddenNavs:(profile.hiddenNavs||[]).slice(),navOrder:(function(){var saved=lsGet('ryeong_nav_order_v1',null);return Array.isArray(saved)&&saved.length?saved.slice():(Array.isArray(profile.navOrder)?profile.navOrder.slice():NAV_ITEMS.map(function(n){return n.key;}));})(),hid:uiGetHid().slice(),order:uiGetOrder(),money:Object.assign({},moneyVisibility,{all:localStorage.getItem('uiMoneyAll')!=='0'})};
+    navSettingsDraft={hiddenNavs:(profile.hiddenNavs||[]).slice(),navOrder:(Array.isArray(profile.navOrder)?profile.navOrder.slice():NAV_ITEMS.map(function(n){return n.key;})),hid:uiGetHid().slice(),order:uiGetOrder(),money:Object.assign({},moneyVisibility,{all:localStorage.getItem('uiMoneyAll')!=='0'})};
     navSettingsDirty=false;uiOpen={};renderUiSettings();
     var m=$('navSettingsModal');if(m)m.classList.add('show');document.body.classList.add('lock');
   };
