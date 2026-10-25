@@ -8121,7 +8121,75 @@ window.downloadReceiptPng=function(){
         if(fallbackTab){
           try{
             fallbackTab.document.open();
-            fallbackTab.document.write('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>小票 PNG</title><style>body{margin:0;padding:14px;background:#fff8fb;color:#594650;font:15px -apple-system,BlinkMacSystemFont,sans-serif;text-align:center}img{display:block;width:100%;height:auto;margin:14px auto;background:white}button{border:0;border-radius:12px;padding:12px 18px;background:#eab7cc;color:#63394c;font-size:15px;font-weight:700}p{line-height:1.6}</style></head><body><p>已按原小票样式生成 PNG。点击下方按钮打开系统分享菜单，选择“存储图像/保存到照片”；若没有该选项，可长按图片尝试保存。</p><button id="shareImage">分享 / 保存图片</button><img id="receiptImage" alt="工作小票 PNG"><p>文件名：'+filename.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];})+'</p><script>document.getElementById("receiptImage").src='+JSON.stringify(blobUrl)+';document.getElementById("shareImage").addEventListener("click",function(){try{if(window.opener&&window.opener.__receiptShareFromPreview){window.opener.__receiptShareFromPreview();}else{alert("请长按图片并选择保存图像。");}}catch(e){alert("请长按图片并选择保存图像。");}});<\/script></body></html>');
+            fallbackTab.document.write('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>小票 PNG</title><style>body{margin:0;padding:14px;background:#fff8fb;color:#594650;font:15px -apple-system,BlinkMacSystemFont,sans-serif;text-align:center}img{display:block;width:100%;height:auto;margin:14px auto;background:white}button{border:0;border-radius:12px;padding:12px 18px;background:#eab7cc;color:#63394c;font-size:15px;font-weight:700}p{line-height:1.6}</style></head><body><p>已按原小票样式生成 PNG。点击下方按钮打开系统分享菜单，选择“存储图像/保存到照片”；若没有该选项，可长按图片尝试保存。</p><button id="shareImage">分享 / 保存图片</button><img id="receiptImage" alt="工作小票 PNG"><p>文件名：'+filename.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];})+'</p><script>document.getElementById("receiptImage").src='+JSON.stringify(blobUrl)+';document.getElementById("shareImage").addEventListener("click",function(){try{if(window.opener&&window.opener.__receiptShareFromPreview){window.opener.__receiptShareFromPreview();}else{alert("请长按图片并选择保存图像。");}}catch(e){alert("请长按图片并选择保存图像。");}});<\/script><script id="price-suite-blank-recovery">
+(function(){
+  function renderPriceSuiteRecovery(){
+    var body=document.getElementById('priceSuiteBody');
+    if(!body)return;
+    try{
+      var data=JSON.parse(localStorage.getItem('ryeong_price_suite_v1')||'{}');
+      var packages=Array.isArray(data.packages)?data.packages:[];
+      var items=Array.isArray(data.items)?data.items:[];
+      var types=[];
+      try{
+        if(typeof window.getAllTypes==='function')types=window.getAllTypes()||[];
+        else if(Array.isArray(window.FIXED_TYPES))types=window.FIXED_TYPES.concat(Array.isArray(window.customTypes)?window.customTypes:[]);
+      }catch(e){}
+      function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+      function price(v){return v==null||v===''?'':String(v);}
+      var html='<div class="stat-block ps-panel"><h3>价格表</h3><p>基础价格</p>';
+      if(types.length){
+        types.forEach(function(t){
+          var p=packages.find(function(x){return x&&String(x.typeId||'')===String(t.id);})||packages.find(function(x){return x&&!x.typeId&&String(x.name||'')===String(t.name||'');});
+          html+='<div class="ps-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+esc(t.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" data-recovery-kind="packages" data-recovery-id="'+esc(p&&p.id||'')+'" data-recovery-name="'+esc(t.name)+'" value="'+esc(price(p&&p.price))+'" placeholder="输入价格"></label></div></div>';
+        });
+      }else{
+        html+='<p>暂时读取不到订单标签，但价格表页面已恢复。请刷新后重试。</p>';
+      }
+      html+='<p>额外需求</p>';
+      var needs=Array.isArray(window.customNeeds)?window.customNeeds.filter(function(n){return n&&n.active!==false;}):[{id:'urgent',name:'加急'},{id:'base',name:'加底'}];
+      needs.forEach(function(n){
+        var it=items.find(function(x){return x&&(x.needId===n.id||(Array.isArray(x.needs)&&x.needs.indexOf(n.id)>=0));});
+        html+='<div class="ps-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+esc(n.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" data-recovery-kind="items" data-recovery-id="'+esc(it&&it.id||'need_'+n.id)+'" data-recovery-need="'+esc(n.id)+'" value="'+esc(price(it&&it.price))+'" placeholder="输入价格"></label></div></div>';
+      });
+      html+='<p style="color:var(--text-sub);font-size:12px">输入价格后会自动保存到本机。</p></div>';
+      body.innerHTML=html;
+      body.querySelectorAll('input[data-recovery-kind]').forEach(function(input){
+        input.addEventListener('change',function(){
+          try{
+            var d=JSON.parse(localStorage.getItem('ryeong_price_suite_v1')||'{}');
+            if(!Array.isArray(d.packages))d.packages=[];
+            if(!Array.isArray(d.items))d.items=[];
+            var arr=input.dataset.recoveryKind==='packages'?d.packages:d.items;
+            var entry=arr.find(function(x){return x&&String(x.id||'')===String(input.dataset.recoveryId||'');});
+            if(!entry){
+              entry={id:input.dataset.recoveryId||('recovery_'+Date.now()),name:input.dataset.recoveryName||'',price:0,active:true};
+              if(input.dataset.recoveryKind==='packages'){entry.typeId=types.find(function(t){return String(t.name)===String(input.dataset.recoveryName);})?.id||'';}
+              else{entry.needId=input.dataset.recoveryNeed;entry.needs=[input.dataset.recoveryNeed];}
+              arr.push(entry);
+            }
+            entry.price=Math.max(0,Number(input.value)||0);
+            localStorage.setItem('ryeong_price_suite_v1',JSON.stringify(d));
+            if(typeof window.toast==='function')window.toast('价格已保存');
+          }catch(e){if(typeof window.toast==='function')window.toast('保存失败，请检查浏览器存储空间');}
+        });
+      });
+    }catch(e){
+      body.innerHTML='<div class="stat-block ps-panel"><h3>价格表</h3><p>价格表读取失败，请刷新页面重试。</p><button type="button" onclick="location.reload()">刷新页面</button></div>';
+    }
+  }
+  window.renderPriceSuiteRecovery=renderPriceSuiteRecovery;
+  document.addEventListener('click',function(e){
+    var nav=e.target&&e.target.closest?e.target.closest('[data-view="priceSuite"]'):null;
+    if(nav)setTimeout(function(){var b=document.getElementById('priceSuiteBody');if(b&&!b.innerHTML.trim())renderPriceSuiteRecovery();},0);
+  },true);
+  window.addEventListener('load',function(){
+    var b=document.getElementById('priceSuiteBody');
+    if(document.getElementById('view-priceSuite')&&document.getElementById('view-priceSuite').classList.contains('active')&&b&&!b.innerHTML.trim())renderPriceSuiteRecovery();
+  });
+})();
+</script>
+</body></html>');
             fallbackTab.document.close();opened=true;
           }catch(e){try{fallbackTab.location.href=blobUrl;opened=true;}catch(e2){}}
         }
