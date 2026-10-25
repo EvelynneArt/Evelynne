@@ -1994,9 +1994,9 @@ body.multi-select-on #view-schedule .swipe-actions{display:none !important;}
 
 
 /* v1.6.5: fixed need tags, DDL mapping and receipt payment defaults */
-.order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;min-width:0;}
-.order-note-row textarea{flex:1 1 0;min-width:0;width:0;box-sizing:border-box;}
-.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;white-space:nowrap;max-width:86px;padding:8px 10px;box-sizing:border-box;border:1px solid var(--pink-200)!important;background:var(--pink-50)!important;color:var(--pink-700)!important;border-radius:12px!important;outline:none!important;box-shadow:none!important;font-size:12px;}
+.order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;}
+.order-note-row textarea{flex:1;min-width:0;box-sizing:border-box;}
+.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;border:1px solid rgba(232,205,216,.9)!important;border-radius:14px!important;outline:none!important;box-shadow:none!important;}
 .amount-qty-row{align-items:center;gap:14px;}
 .amount-group{flex:1;min-width:0;}
 .amount-group input#price{width:100%;box-sizing:border-box;}
@@ -2575,11 +2575,11 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 <style id="v165-prepay-refund-status">
 /* v1.6.5：预存退款状态与永久锁定标识 */
 .prepay-status-refunded,.prepay-status-archived{display:inline-flex;align-items:center;vertical-align:middle;margin-left:5px;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap;}
-.prepay-status-refunded{background:var(--pink-100);color:var(--pink-700);border:1px solid var(--pink-300);}
+.prepay-status-refunded{background:#3b3b3b;color:#fff;border:1px solid #777;}
 .prepay-status-archived{background:var(--pink-50);color:var(--text-sub);border:1px solid var(--card-border);}
-.prepay-card.refunded{border-color:var(--pink-300)!important;opacity:.9;}
+.prepay-card.refunded{border-color:#777!important;opacity:.9;}
 .prepay-locked-note{font-size:11px;color:var(--text-sub);padding:7px 2px;}
-#prepayList .prepay-account-actions button.refund{background:var(--pink-100)!important;color:var(--pink-700)!important;border:1px solid var(--pink-300)!important;}
+#prepayList .prepay-account-actions button.refund{background:#5c5c5c!important;color:#fff!important;border-color:#5c5c5c!important;}
 </style>
 </head>
 <body>
@@ -4062,8 +4062,6 @@ function loadProfile() {
     profile.avatarData = saved.avatarData || '';
     profile.avatarShape = ['rounded','circle'].indexOf(saved.avatarShape) > -1 ? saved.avatarShape : 'rounded';
     profile.hiddenNavs = Array.isArray(saved.hiddenNavs) ? saved.hiddenNavs.filter(function (k) { return k !== 'workspace'; }) : [];
-    profile.navOrder = Array.isArray(saved.navOrder) ? saved.navOrder.filter(function (k, i, a) { return typeof k === 'string' && a.indexOf(k) === i; }) : NAV_ITEMS.map(function (n) { return n.key; });
-    NAV_ITEMS.forEach(function (n) { if (profile.navOrder.indexOf(n.key) < 0) profile.navOrder.push(n.key); });
   }
 }
 
@@ -4339,15 +4337,7 @@ function switchView(name) {
     try { renderIncome(); } catch (e) {}
   }
   if (name === 'priceSuite') {
-    try {
-      if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage();
-      else if (typeof window.openPriceSuite === 'function') window.openPriceSuite();
-      else console.error('价格表渲染函数未加载');
-    } catch (e) {
-      console.error('价格表页面渲染失败', e);
-      var priceBody = $('priceSuiteBody');
-      if (priceBody && !priceBody.innerHTML.trim()) priceBody.innerHTML = '<div class="stat-block"><h4>价格表暂时无法加载</h4><p>请刷新重试；当前价格数据未被此提示修改或清除。</p></div>';
-    }
+    try { if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage(); else if (typeof window.openPriceSuite === 'function') window.openPriceSuite(); } catch (e) { console.error('价格表页面渲染失败', e); }
   }
 }
 
@@ -4923,7 +4913,11 @@ function buildOrderCard(o) {
 
   let priceHtml = '';
   if (hasPrice) {
-    priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.price).toFixed(2), 'income') + '</span>';
+    if (o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))) {
+      priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.pricingSnapshot.calculatedTotal).toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
+    } else {
+      priceHtml += '<span class="order-price">' + uiMoney(uiMoney('¥' + Number(o.price).toFixed(2), 'income'), 'income') + '</span>';
+    }
   } else {
     priceHtml += '<span class="order-price missing">未标价</span>';
   }
@@ -7938,6 +7932,7 @@ window.setPriceCalcMode=function(v){cfg.mode='all';write();renderSuite();};
 window.addPriceEntry=function(type){var n=document.getElementById(type==='packages'?'psNewPack':'psNewItem'),p=document.getElementById(type==='packages'?'psNewPackPrice':'psNewItemPrice');var name=(n.value||'').trim(),price=Number(p.value);if(!name||!Number.isFinite(price)||price<0){toast('请填写名称和有效价格');return;}var entry={id:'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,6),name:name,price:price,active:true,method:type==='packages'?'perImage':'perOrder',typeId:'',needs:[],isDefault:false};if(type==='packages'){var t=findTypeByName(name);if(!t){t={id:'custom_'+Date.now()+'_'+Math.random().toString(16).slice(2),name:name,color:'var(--pink-600)'};if(typeof customTypes!=='undefined'){customTypes.push(t);if(typeof saveData==='function')saveData();}}entry.typeId=t?t.id:'';if(!cfg.packages.some(function(z){return String(z.typeId||'')===String(entry.typeId)&&entry.typeId;}))entry.isDefault=true;}cfg[type].push(entry);write();renderSuite();};
 window.editPriceEntry=function(type,id,key,val){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(key==='price'){var n=Number(val);if(!Number.isFinite(n)||n<0){toast('价格不能小于 0');renderSuite();return;}x.price=n;}else if(key==='mode'){x.mode=val==='all'||val==='basePlus'?val:'';}else if(key==='method'){x.method=type==='packages'?'perImage':(val==='perImage'?'perImage':'perOrder');}else if(key==='calcMode'){x.calcMode=['all','basePlus'].indexOf(val)>=0?val:'global';}else if(key==='typeId'){x.typeId=String(val||'');}else if(key==='isDefault'){x.isDefault=!!val;if(x.isDefault)cfg.packages.forEach(function(z){if(z.id!==id)z.isDefault=false;});}else{x.name=String(val||'').trim();}write();if(key==='isDefault'||key==='calcMode')renderSuite();if(typeof toast==='function')toast('已保存');};
 window.previewOrderPrice=function(){ /* 标签/需求变更不自动覆盖用户金额。 */ };
+};
 window.editPriceNeed=function(id,need,on){var x=cfg.items.find(function(z){return z.id===id;});if(!x)return;x.needs=Array.isArray(x.needs)?x.needs:[];x.needs=x.needs.filter(function(n){return n!==need;});if(on)x.needs.push(need);write();};
 window.removePriceEntry=function(type,id){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(!confirm('确定停用「'+x.name+'」吗？停用后不参与新订单计价，历史订单不受影响。'))return;x.active=false;write();renderSuite();};
 window.togglePriceEntry=async function(type,id){var x=cfg[type].find(function(z){return z.id===id;});if(!x)return;if(x.active!==false){var ok=await uiConfirm('确定停用「'+x.name+'」吗？停用后不参与新订单计价，历史订单不受影响。',{okText:'停用',cancelText:'取消'});if(!ok)return;x.active=false;}else{x.active=true;}write();renderSuite();};
