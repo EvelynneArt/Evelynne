@@ -997,7 +997,8 @@ body.multi-select-on .bottom-nav, body.multi-select-on nav.bottom-nav { z-index:
 .wheel-track::-webkit-scrollbar { display: none; }
 .wheel-item {
   height: 20px; display: flex;
-  align-items: center; justify-content: center;  font-size: 13px; font-weight: 600;
+  align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
   color: var(--text-main); scroll-snap-align: center;
   transition: color 0.2s, font-size 0.2s, opacity 0.2s;
   opacity: 0.72;
@@ -1217,7 +1218,7 @@ body.multi-select-on .bottom-nav, body.multi-select-on nav.bottom-nav { z-index:
 .toast {
   position: fixed; bottom: 100px; left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: color-mix(in srgb, var(--pink-700) 94%, var(--bg-base));
+  background: rgba(71, 42, 55, 0.92);
   color: #fff; padding: 10px 20px;
   border-radius: 99px; font-size: 13px; font-weight: 600;
   opacity: 0; transition: opacity 0.3s, transform 0.3s;
@@ -1229,7 +1230,7 @@ body.multi-select-on .bottom-nav, body.multi-select-on nav.bottom-nav { z-index:
 .undo-toast {
   position: fixed; bottom: 100px; left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: color-mix(in srgb, var(--pink-700) 94%, var(--bg-base));
+  background: rgba(71, 42, 55, 0.95);
   color: #fff; padding: 12px 16px;
   border-radius: 99px;
   font-size: 13px; font-weight: 600;
@@ -1992,11 +1993,12 @@ body.multi-select-on #view-schedule .swipe-actions{display:none !important;}
 .ui-tab{margin-bottom:10px}.ui-head{display:flex;align-items:center;gap:10px;padding:12px 14px}.ui-name{flex:1;min-width:0}.ui-name b{font-size:14px;color:var(--text-main)}.ui-name small{display:block;font-size:11px;color:var(--text-sub);margin-top:1px}.ui-caret{font-size:11px;color:var(--text-light);transition:transform .2s}.ui-open .ui-caret{transform:rotate(90deg)}.ui-body{border-top:1px solid var(--pink-100);background:rgba(255,255,255,.6);padding:2px 0 6px}.ui-sub{font-size:11px;font-weight:700;color:var(--text-sub);padding:10px 14px 2px;letter-spacing:.3px}.ui-body .nav-toggle-row{padding:6px 14px 6px 22px;border-bottom:none}.ui-body .settings-label{font-size:13px;font-weight:500}.ui-body .toggle-switch{transform:scale(.88)}
 
 
-/* v1.6.46: fixed need tags, DDL mapping and receipt payment defaults */
+/* v1.6.5: fixed need tags, DDL mapping and receipt payment defaults */
 .order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;}
 .order-note-row textarea{flex:1;min-width:0;box-sizing:border-box;}
-.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;min-width:76px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;line-height:1.2;border:1px solid color-mix(in srgb,var(--pink-500) 35%,var(--card-border))!important;border-radius:14px!important;outline:none!important;box-shadow:none!important;background:var(--pink-50)!important;color:var(--pink-700)!important;font:inherit;font-weight:600;padding:0 12px!important;box-sizing:border-box;}
-.amount-qty-row{align-items:center;gap:14px;}.amount-group{flex:1;min-width:0;}
+.order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;border:1px solid rgba(232,205,216,.9)!important;border-radius:14px!important;outline:none!important;box-shadow:none!important;}
+.amount-qty-row{align-items:center;gap:14px;}
+.amount-group{flex:1;min-width:0;}
 .amount-group input#price{width:100%;box-sizing:border-box;}
 .wheel-picker.small{flex:0 0 88px;width:88px;box-sizing:border-box;border:1px solid rgba(232,205,216,.9)!important;border-radius:16px!important;outline:none!important;box-shadow:none!important;}
 .wheel-highlight{border-left-color:rgba(255,184,206,.6)!important;border-right-color:rgba(255,184,206,.6)!important;}
@@ -2283,7 +2285,7 @@ html[data-theme-default="1"] span.clear.price-chip{background-color:rgb(255, 246
 html[data-theme-default="1"] div.small.wheel-picker{background-color:rgba(0, 0, 0, 0)!important;background-image:linear-gradient(rgb(255, 253, 254), rgb(255, 245, 249), rgb(255, 253, 254))!important;border-color:rgba(232, 205, 216, 0.9)!important;box-shadow:none!important}
 html[data-theme-default="1"] div.wheel-item{border-color:rgb(201, 179, 190)!important;color:rgb(201, 179, 190)!important;opacity:0.45!important}
 html[data-theme-default="1"] div.wheel-highlight{background-color:rgba(0, 0, 0, 0)!important;background-image:linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 230, 239, 0.35), rgba(0, 0, 0, 0))!important;border-bottom-color:rgba(255, 184, 206, 0.6)!important;border-left-color:rgba(255,184,206,.6)!important;border-top-color:rgba(255, 184, 206, 0.6)!important}
-html[data-theme-default="1"] button.copy-note-btn{background-color:var(--pink-50)!important;border-color:color-mix(in srgb,var(--pink-500) 35%,var(--card-border))!important;color:var(--pink-700)!important}
+html[data-theme-default="1"] button.copy-note-btn{background-color:rgb(247, 237, 241)!important;border-color:rgb(168, 93, 119)!important;color:rgb(168, 93, 119)!important}
 html[data-theme-default="1"] div.output-progress-box{background-color:rgb(250, 250, 250)!important;border-color:rgb(238, 238, 238)!important}
 html[data-theme-default="1"] div.output-progress-bar{background-color:rgb(238, 238, 238)!important}
 html[data-theme-default="1"] button.output-add-btn{border-color:rgb(229, 186, 200)!important;color:rgb(185, 70, 104)!important}
@@ -2569,6 +2571,15 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 #view-priceSuite .ps-linked-entry .ps-disable{padding:6px 8px!important;font-size:10.5px!important;border-radius:7px!important;white-space:nowrap!important}
 @media(max-width:380px){#view-priceSuite .ps-entry-list{gap:6px!important}#view-priceSuite .ps-entry.ps-linked-entry{padding:7px 7px!important}#view-priceSuite .ps-linked-entry .ps-entry-fields{grid-template-columns:minmax(0,1fr) minmax(0,82px) auto!important;gap:5px!important}#view-priceSuite .ps-linked-entry .ps-linked-name{font-size:11px!important}#view-priceSuite .ps-linked-entry .ps-disable{padding:6px 6px!important;font-size:10px!important}}
 /* v1.6.46：导出截图使用离屏副本，不改变小票实际预览布局 */
+</style>
+<style id="v165-prepay-refund-status">
+/* v1.6.5：预存退款状态与永久锁定标识 */
+.prepay-status-refunded,.prepay-status-archived{display:inline-flex;align-items:center;vertical-align:middle;margin-left:5px;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap;}
+.prepay-status-refunded{background:#3b3b3b;color:#fff;border:1px solid #777;}
+.prepay-status-archived{background:var(--pink-50);color:var(--text-sub);border:1px solid var(--card-border);}
+.prepay-card.refunded{border-color:#777!important;opacity:.9;}
+.prepay-locked-note{font-size:11px;color:var(--text-sub);padding:7px 2px;}
+#prepayList .prepay-account-actions button.refund{background:#5c5c5c!important;color:#fff!important;border-color:#5c5c5c!important;}
 </style>
 </head>
 <body>
@@ -2995,7 +3006,8 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
       <button type="button" class="range-pick-btn" data-days="30" onclick="setWeekStatsRange(30)">近一个月</button>
       <button type="button" class="range-pick-btn" data-days="0" onclick="setWeekStatsRange(0)">全部</button>
     </div>
-    <div class="modal-actions" style="margin-top:14px;">      <button class="btn-cancel" onclick="closeWeekStatsRangeModal()">取消</button>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn-cancel" onclick="closeWeekStatsRangeModal()">取消</button>
     </div>
   </div>
 </div>
@@ -3058,7 +3070,7 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 <div class="modal" id="settingsModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2>⚙️ 设置 <span class="settings-version">v1.6.46</span></h2>
+      <h2>⚙️ 设置 <span class="settings-version">v1.6.5</span></h2>
       <button class="modal-close" onclick="closeSettings()">←</button>
     </div>
 
@@ -3462,15 +3474,14 @@ const PASTEL_THEMES = [
   { id:'pastel-nengya', name:'青芽绿', group:'pastel', hueName:'青芽绿', swatch:'#CDE7BE', vars:{'bg-base':'#f9fcf7','pink-500':'#CDE7BE','text-main':'#40563a','text-sub':'#75936c','text-light':'#b9cdb2','card-bg':'#ffffff','input-bg':'#ffffff'} },
   { id:'pastel-bohe', name:'雾薄荷', group:'pastel', hueName:'雾薄荷', swatch:'#B8DCD7', vars:{'bg-base':'#f7fcfb','pink-500':'#B8DCD7','text-main':'#355b56','text-sub':'#6e9992','text-light':'#b5cfcb','card-bg':'#ffffff','input-bg':'#ffffff'} },
   { id:'pastel-tianlan', name:'云雾蓝', group:'pastel', hueName:'云雾蓝', swatch:'#B7C9D9', vars:{'bg-base':'#f7fafc','pink-500':'#B7C9D9','text-main':'#394d60','text-sub':'#6d8498','text-light':'#b4c1cc','card-bg':'#ffffff','input-bg':'#ffffff'} },
-  { id:'pastel-wuzi', name:'奶雾紫', group:'pastel', hueName:'奶雾紫', swatch:'#c7b3df', vars:{'bg-base':'#faf8fc','pink-500':'#c7b3df','text-main':'#493d58','text-sub':'#7f6d92','text-light':'#bdb1c9','card-bg':'#ffffff','input-bg':'#ffffff'} }
-  ,
-  { id:'theme-blackwhite-light', name:'黑白灰·浅色', group:'pastel', hueName:'黑白灰·浅色', swatch:'#9a9a9a', vars:{
-    'bg-base':'#f4f4f4','card-bg':'#ffffff','card-bg-alpha':'rgba(255,255,255,0.96)','input-bg':'#fafafa',
-    'pink-50':'#f7f7f7','pink-100':'#eeeeee','pink-200':'#dedede','pink-300':'#c8c8c8','pink-400':'#a8a8a8',
-    'pink-500':'#777777','pink-600':'#555555','pink-700':'#333333',
-    'text-main':'#202020','text-sub':'#666666','text-light':'#999999',
-    'card-border':'rgba(0,0,0,0.10)','header-bg':'rgba(255,255,255,0.94)',
-    'accent-blue-1':'#555555','accent-blue-2':'#777777'
+  { id:'pastel-wuzi', name:'奶雾紫', group:'pastel', hueName:'奶雾紫', swatch:'#c7b3df', vars:{'bg-base':'#faf8fc','pink-500':'#c7b3df','text-main':'#493d58','text-sub':'#7f6d92','text-light':'#bdb1c9','card-bg':'#ffffff','input-bg':'#ffffff'} },
+  /* 浅色黑白灰：白色底、浅灰卡片与中性灰强调，不使用其他彩色 */
+  { id:'pastel-monochrome', name:'黑白灰', group:'pastel', hueName:'黑白灰', swatch:'#b8b8b8', vars:{
+    'bg-base':'#f5f5f5','card-bg':'#ffffff','input-bg':'#ffffff',
+    'pink-50':'#f7f7f7','pink-100':'#eeeeee','pink-200':'#dedede','pink-300':'#c9c9c9','pink-400':'#aaaaaa',
+    'pink-500':'#858585','pink-600':'#666666','pink-700':'#454545',
+    'text-main':'#262626','text-sub':'#666666','text-light':'#999999',
+    'card-border':'rgba(80,80,80,0.13)','header-bg':'rgba(250,250,250,0.96)'
   } }
 ];
 
@@ -3510,15 +3521,15 @@ const DARK_THEMES = [
     'text-main':'#eef0f3','text-sub':'#b4b9c2','text-light':'#737a86',
     'card-border':'rgba(200,204,212,0.16)','header-bg':'rgba(13,15,18,0.94)',
     'accent-blue-1':'#5c1f28','accent-blue-2':'#7a2b36'
-  } }
-  ,
-  { id:'theme-blackwhite-dark', name:'黑白灰·深色', group:'dark', hueName:'黑白灰·深色', swatch:'#777777', vars:{
-    'bg-base':'#171717','card-bg':'#242424','card-bg-alpha':'rgba(36,36,36,0.96)','input-bg':'#1c1c1c',
-    'pink-50':'#202020','pink-100':'#292929','pink-200':'#383838','pink-300':'#505050','pink-400':'#777777',
-    'pink-500':'#929292','pink-600':'#bdbdbd','pink-700':'#eeeeee',
-    'text-main':'#f1f1f1','text-sub':'#c0c0c0','text-light':'#888888',
-    'card-border':'rgba(255,255,255,0.13)','header-bg':'rgba(23,23,23,0.95)',
-    'accent-blue-1':'#383838','accent-blue-2':'#505050'
+  } },
+  /* 黑白灰：纯中性色，不使用粉、紫、蓝等彩色强调 */
+  { id:'dark-monochrome', name:'黑白灰', group:'dark', hueName:'黑白灰', swatch:'#858585', vars:{
+    'bg-base':'#171717','card-bg':'#242424','input-bg':'#101010',
+    'pink-50':'#202020','pink-100':'#2b2b2b','pink-200':'#414141','pink-300':'#595959','pink-400':'#858585',
+    'pink-500':'#858585','pink-600':'#c4c4c4','pink-700':'#f0f0f0',
+    'text-main':'#f2f2f2','text-sub':'#b9b9b9','text-light':'#858585',
+    'card-border':'rgba(220,220,220,0.16)','header-bg':'rgba(23,23,23,0.96)',
+    'accent-blue-1':'#414141','accent-blue-2':'#858585'
   } }
 ];
 
@@ -3610,6 +3621,9 @@ function buildThemeCSS(vars) {
   merged['card-bg-alpha'] = vars['card-bg-alpha'] || mkAlpha(merged['card-bg'],0.94);
   merged['card-border'] = vars['card-border'] || (dark ? mkAlpha(primary,.32) : mkAlpha(primary,.25));
   merged['header-bg'] = vars['header-bg'] || (dark ? mkAlpha(base,.94) : mkAlpha(base,.94));
+  /* 阴影色跟随当前主题主色；黑白灰主题自然得到中性灰阴影。 */
+  merged['theme-shadow'] = mkAlpha(primary, dark ? .30 : .18);
+  merged['theme-shadow-soft'] = mkAlpha(primary, dark ? .20 : .11);
 
   /* 警告、普通、按钮、状态色也全部锁定在当前主题色相，不再残留固定红/黄/蓝。 */
   merged['urgent-bg-1'] = vars['urgent-bg-1'] || (dark ? mix(base,primary,.18) : mix(base,primary,.10));
@@ -3636,14 +3650,9 @@ function buildThemeCSS(vars) {
   merged['red'] = vars['red'] || merged['pink-700'];
   merged['amber'] = vars['amber'] || merged['pink-600'];
 
-  /* 所有主题共享同一组界面强调色与阴影色，避免组件继续残留默认粉色。 */
-  var themeShadow = mkAlpha(primary, dark ? 0.24 : 0.14);
-  var themeShadowSoft = mkAlpha(primary, dark ? 0.16 : 0.09);
-  var themeFocus = mkAlpha(primary, dark ? 0.30 : 0.20);
   var lines = THEME_VAR_KEYS.map(function(k){ return '--' + k + ': ' + (merged[k] || DEFAULT_THEME_VARS[k] || '') + ';'; });
-  lines.push('--theme-shadow: ' + themeShadow + ';');
-  lines.push('--theme-shadow-soft: ' + themeShadowSoft + ';');
-  lines.push('--theme-focus-ring: ' + themeFocus + ';');
+  lines.push('--theme-shadow: ' + mkAlpha(primary, dark ? .30 : .18) + ';');
+  lines.push('--theme-shadow-soft: ' + mkAlpha(primary, dark ? .20 : .11) + ';');
   return ':root{' + lines.join('') + '}' +
     '.deadline-title{color:var(--urgent-text)!important}' +
     '.deadline-title .deadline-count{background:var(--urgent-badge-bg)!important;color:var(--urgent-badge-text)!important}' +
@@ -3651,15 +3660,9 @@ function buildThemeCSS(vars) {
     '.unpriced-banner{color:var(--normal-text)!important}' +
     '.filter-tag{color:var(--text-sub)}' +
     '.theme-live-preview,.theme-diy-preview{background:var(--bg-base)}' +
-    /* 头像、顶栏、资料卡及选择态统一读取当前主题变量，不保留硬编码粉色光晕。 */ 
-    '.avatar-preview{background:linear-gradient(135deg,var(--pink-100),var(--pink-200))!important;box-shadow:0 6px 16px var(--theme-shadow),inset 0 1px 0 var(--card-bg)!important}' +
-    '.avatar-cell{background:var(--pink-50)!important;border-color:var(--card-border)}' +
-    '.app-header{background:var(--header-bg)!important;box-shadow:0 4px 18px var(--theme-shadow-soft)}' +
-    '.profile-card,.profile-panel,.user-profile-card,.settings-profile-card{background:var(--card-bg)!important;border-color:var(--card-border)!important;box-shadow:0 6px 20px var(--theme-shadow-soft)!important}' +
-    'button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline-color:var(--pink-400)!important;box-shadow:0 0 0 3px var(--theme-focus-ring)!important}' +
-    '.need-input:focus,.amount-group input[type=number]:focus{box-shadow:0 0 0 4px var(--theme-focus-ring)!important}' +
-    '.btn-primary,.primary-btn,.order-top-save,.nav-settings-save{background:linear-gradient(135deg,var(--pink-400),var(--pink-600))!important}' +
-    '.modal,.modal-content,.sheet,.settings-panel{border-color:var(--card-border)}';
+    '.avatar-preview,.header-avatar,.avatar-cell{box-shadow:0 6px 16px var(--theme-shadow,rgba(0,0,0,.14))!important}' +
+    '.avatar-preview{background:linear-gradient(135deg,var(--pink-100),var(--pink-200))!important}' +
+    '.avatar-cell{background:var(--pink-50)!important;border-color:var(--card-border)!important}';
 }
 
 function applyThemeVars(vars) {
@@ -4028,7 +4031,8 @@ function doUndo() {
         return;
       }
       addPrepayLedger(restored.prepayClientId, -amount, 'deduct', '恢复订单扣预存', restored.id);
-      restored.prepayReleased = false;    }
+      restored.prepayReleased = false;
+    }
     orders.unshift(restored);
     trash.splice(idx, 1);
     saveData();
@@ -4059,7 +4063,6 @@ function loadProfile() {
     profile.avatarData = saved.avatarData || '';
     profile.avatarShape = ['rounded','circle'].indexOf(saved.avatarShape) > -1 ? saved.avatarShape : 'rounded';
     profile.hiddenNavs = Array.isArray(saved.hiddenNavs) ? saved.hiddenNavs.filter(function (k) { return k !== 'workspace'; }) : [];
-    profile.navOrder = Array.isArray(saved.navOrder) ? saved.navOrder.slice() : null;
   }
 }
 
@@ -4911,9 +4914,11 @@ function buildOrderCard(o) {
 
   let priceHtml = '';
   if (hasPrice) {
-    // 卡片统一按当前单价 × 数量显示总额；手动标价和计价器标价采用同一规则。
-    const cardTotal = Number(o.price) * qty;
-    priceHtml += '<span class="order-price">' + uiMoney('¥' + cardTotal.toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
+    if (o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))) {
+      priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.pricingSnapshot.calculatedTotal).toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
+    } else {
+      priceHtml += '<span class="order-price">' + uiMoney(uiMoney('¥' + Number(o.price).toFixed(2), 'income'), 'income') + '</span>';
+    }
   } else {
     priceHtml += '<span class="order-price missing">未标价</span>';
   }
@@ -5026,7 +5031,8 @@ function copyOrderInfo(e, id) {
   const qty = parseInt(o.quantity, 10) || 1;
 
   const lines = [];
-  lines.push('单主：' + o.clientId);  lines.push('类型：' + typeNames + (o.hasBase ? ' + 加底' : ''));
+  lines.push('单主：' + o.clientId);
+  lines.push('类型：' + typeNames + (o.hasBase ? ' + 加底' : ''));
   if (Array.isArray(o.needNames)&&o.needNames.length) lines.push('需求：'+o.needNames.join('、')); else if (o.customNeed) lines.push('需求：' + o.customNeed);
   if (o.orderNote) lines.push('备注：' + o.orderNote);
   if (o.price) lines.push('金额：'+uiMoney('¥' + Number(o.price).toFixed(2), 'income') + (qty > 1 ? ' × ' + qty : ''));
@@ -6025,7 +6031,8 @@ function saveOrder() {
 }
 
 
-function getPrepayAccount(clientId, create) {  const id = String(clientId || '').trim();
+function getPrepayAccount(clientId, create) {
+  const id = String(clientId || '').trim();
   if (!id) return null;
   let account = prepayAccounts.find(function (x) { return x.clientId === id; });
   if (account && account.archived == null) account.archived = false;
@@ -6045,6 +6052,7 @@ function addPrepayLedger(clientId, amount, type, note, orderId, paidAmount, gift
   const account = getPrepayAccount(clientId, true);
   const n = Number(amount) || 0;
   if (!account || !n) return;
+  if (account.refunded && type !== 'refund') { toast('该账户已退款并永久锁定，不能继续变更预存'); return; }
   account.balance = Math.round(((Number(account.balance) || 0) + n) * 100) / 100;
   if (account.balance < 0) account.balance = 0;
   account.updatedAt = Date.now();
@@ -6069,6 +6077,8 @@ function applyOrderPrepay(order, amount) {
     return;
   }
   const clientId = order.clientId;
+  const existingPrepayAccount = getPrepayAccount(clientId, false);
+  if (existingPrepayAccount && existingPrepayAccount.refunded) throw new Error('该单主的预存账户已退款并永久锁定');
   const balance = getPrepayBalance(clientId);
   if (balance + 0.000001 < n) throw new Error('预存不足');
   addPrepayLedger(clientId, -n, 'deduct', '订单扣预存', order.id);
@@ -6176,6 +6186,8 @@ function resetPrepayForm() {
 function editPrepayment(id) {
   const log = prepayLedger.find(function (l) { return l.id === id && l.type === 'recharge'; });
   if (!log) { toast('这条记录不能修改'); return; }
+  const linkedAccount = getPrepayAccount(log.clientId, false);
+  if (linkedAccount && linkedAccount.refunded) { toast('已退款账户的充值记录不可修改'); return; }
   const editId = $('prepayEditId'), client = $('prepayClientId'), amount = $('prepayAmount'), gift = $('prepayGiftAmount'), note = $('prepayNote');
   if (editId) editId.value = log.id;
   if (client) { client.value = log.clientId || ''; client.readOnly = true; } // 单主ID锁死，避免牵动订单历史
@@ -6263,6 +6275,8 @@ function savePrepayment() {
 function rechargePrepayAccount(clientId) {
   const id = String(clientId || '').trim();
   if (!id) return;
+  const existingAccount = getPrepayAccount(id, false);
+  if (existingAccount && existingAccount.refunded) { toast('该账户已退款并永久锁定，不能继续充值'); return; }
   // "充值"走的是新增流水这条纯加法路径（savePrepayment 里 !editId 分支），
   // 只会在原有余额基础上 +amount，不会像"修改历史记录"那样覆盖总额，
   // 因此不会把已经被订单扣掉的部分重复扣一次。
@@ -6300,6 +6314,7 @@ async function clearPrepayBalance(clientId) {
   if (!id) return;
   const account = getPrepayAccount(id, false);
   if (!account) { toast('找不到这个预存单主'); return; }
+  if (account.refunded) { toast('已退款账户永久锁定，不能再次清空或操作'); return; }
   const balance = Number(account.balance) || 0;
   if (balance <= 0) { toast('这个单主当前余额已经是 ¥0.00'); return; }
 
@@ -6317,9 +6332,46 @@ async function clearPrepayBalance(clientId) {
   toast('预存余额已清空 ✓');
 }
 
+async function refundPrepayAccount(clientId) {
+  const id = String(clientId || '').trim();
+  if (!id) return;
+  const account = getPrepayAccount(id, false);
+  if (!account) { toast('找不到这个预存单主'); return; }
+  if (account.refunded) { toast('该账户已退款，不能再次退款'); return; }
+  const balance = Math.max(0, Number(account.balance) || 0);
+  if (balance <= 0) { toast('当前余额为 ¥0.00，没有可退款金额'); return; }
+  const logs = (prepayLedger || []).filter(function (l) { return l && l.clientId === id && l.type === 'recharge'; });
+  const paidTotal = logs.reduce(function (sum, l) { return sum + Math.max(0, Number(l.paidAmount != null ? l.paidAmount : l.amount) || 0); }, 0);
+  const creditedTotal = logs.reduce(function (sum, l) { return sum + Math.max(0, Number(l.paidAmount != null ? l.paidAmount : l.amount) || 0) + Math.max(0, Number(l.giftAmount) || 0); }, 0);
+  if (creditedTotal <= 0 || paidTotal <= 0) { toast('没有有效的充值实付记录，无法计算退款'); return; }
+  const refundAmount = Math.round((balance * paidTotal / creditedTotal) * 100) / 100;
+  const ok = await uiConfirm('为「' + id + '」办理退款？\n当前余额：¥' + balance.toFixed(2) + '\n累计实付比例：' + (paidTotal / creditedTotal * 100).toFixed(2) + '%\n预计退款：¥' + refundAmount.toFixed(2) + '\n\n确认后余额将清零，账户自动标记为「已退款」并永久锁定，不能重新启用或再次退款。', { okText:'确认退款' });
+  if (!ok) return;
+  // 防止确认弹窗期间状态变化，提交前再次检查。
+  if (account.refunded) { toast('该账户已退款，不能再次退款'); return; }
+  const currentBalance = Math.max(0, Number(account.balance) || 0);
+  if (currentBalance <= 0) { toast('当前余额已变化，请重新检查'); return; }
+  const actualRefund = Math.round((currentBalance * paidTotal / creditedTotal) * 100) / 100;
+  const expiredGiftValue = Math.max(0, Math.round((currentBalance - actualRefund) * 100) / 100);
+  prepayLedger.unshift({ id: uid().replace(/^o_/, 'p_'), clientId: id, amount: -actualRefund, type: 'refund', note: '用户申请退款；实际退款 ¥' + actualRefund.toFixed(2), orderId: '', paidAmount: 0, giftAmount: 0, refundAmount: actualRefund, createdAt: Date.now() });
+  if (expiredGiftValue > 0) prepayLedger.unshift({ id: uid().replace(/^o_/, 'p_'), clientId: id, amount: -expiredGiftValue, type: 'adjust', note: '退款后赠送余额失效', orderId: '', paidAmount: 0, giftAmount: 0, createdAt: Date.now() });
+  account.balance = 0;
+  account.refunded = true;
+  account.archived = false;
+  account.refundedAt = Date.now();
+  account.refundAmount = actualRefund;
+  account.updatedAt = Date.now();
+  saveData();
+  renderPrepay();
+  try { renderIncome(); } catch (e) {}
+  try { renderWorkspace(); } catch (e) {}
+  toast('退款已记录：¥' + actualRefund.toFixed(2) + '；账户已永久锁定');
+}
+
 async function deletePrepayAccount(clientId) {
   const id=String(clientId||'').trim(); if(!id)return;
   const account=getPrepayAccount(id,false); if(!account){toast('找不到这个预存单主');return;}
+  if(account.refunded){toast('已退款账户永久锁定，不能删除或恢复');return;}
   const linkedOrders=orders.filter(function(o){return Number(o.prepaidAmount)>0&&(o.prepayClientId||o.clientId)===id;});
   const currentBalance=Math.max(0,Number(account.balance)||0);
   if(linkedOrders.length || currentBalance>0){
@@ -6335,7 +6387,7 @@ async function deletePrepayAccount(clientId) {
   prepayLedger=prepayLedger.filter(function(l){return l.clientId!==id;}); saveData();
   if(($('prepayClientId')&&$('prepayClientId').value.trim())===id)resetPrepayForm(); renderPrepay(); try{renderIncome();}catch(e){} toast('预存单主已移入回收站');
 }
-function togglePrepayArchived(clientId){const id=String(clientId||'').trim(),a=getPrepayAccount(id,false);if(!a)return;a.archived=!a.archived;a.updatedAt=Date.now();saveData();renderPrepay();toast(a.archived?'已归档 ✓':'已恢复预存单主 ✓');}
+function togglePrepayArchived(clientId){const id=String(clientId||'').trim(),a=getPrepayAccount(id,false);if(!a)return;if(a.refunded){toast('已退款账户永久锁定，不能重新启用');return;}a.archived=!a.archived;a.updatedAt=Date.now();saveData();renderPrepay();toast(a.archived?'已归档 ✓':'已恢复预存单主 ✓');}
 
 function loadMoneyVisibility(){try{const v=JSON.parse(localStorage.getItem('moneyVisibility')||'{}');if(typeof v.income==='boolean')moneyVisibility.income=v.income;if(typeof v.prepay==='boolean')moneyVisibility.prepay=v.prepay;}catch(e){}}
 function saveMoneyVisibility(){try{localStorage.setItem('moneyVisibility',JSON.stringify(moneyVisibility));}catch(e){}}
@@ -6452,13 +6504,13 @@ function renderPrepay() {
         const isRefund = l.type === 'refund';
         const isAdjust = l.type === 'adjust';
         const isRecharge = l.type === 'recharge';
-        const label = isDeduct ? '扣预存' : (isRefund ? '订单退回' : (isAdjust ? '金额调整' : '增加预存'));
-        const sign = (isDeduct || (isAdjust && Number(l.amount) < 0)) ? '-' : '+';
+        const label = isDeduct ? '扣预存' : (isRefund ? (l.note && String(l.note).indexOf('用户申请退款') === 0 ? '用户退款' : '订单退回') : (isAdjust ? '金额调整' : '增加预存'));
+        const sign = (isDeduct || isRefund || (isAdjust && Number(l.amount) < 0)) ? '-' : '+';
         const cls = isDeduct ? 'deduct' : (isRefund ? 'refund' : (isAdjust ? 'refund' : 'recharge'));
         const date = new Date(l.createdAt || Date.now());
         const dateText = date.getMonth() + 1 + '/' + date.getDate();
         const counted = l.countInIncome !== false;
-        const actions = isRecharge
+        const actions = isRecharge && !a.refunded
           ? '<div class="prepay-record-actions">' +
             '<button type="button" onclick="editPrepayment(\'' + escapeHtml(l.id) + '\')">修改</button>' +
             '<button type="button" class="record-count-toggle' + (counted ? '' : ' off') + '" onclick="togglePrepayRecordCountInIncome(\'' + escapeHtml(l.id) + '\')" title="只切换这一笔预存是否计入本月收入">' + (counted ? '计入' : '不计入') + '</button>' +
@@ -6477,20 +6529,23 @@ function renderPrepay() {
       }).join('') + '</div>'
     ) : '';
 
-    return '<div class="prepay-card'+(a.archived?' archived':'')+'">' +
+    return '<div class="prepay-card'+(a.archived?' archived':'')+(a.refunded?' refunded':'')+'">' +
       '<div class="prepay-card-head">' +
-      '<span class="prepay-client">' + escapeHtml(a.clientId) + '</span>' +
+      '<span class="prepay-client">' + escapeHtml(a.clientId) + (a.refunded ? ' <span class="prepay-status-refunded">已退款</span>' : (a.archived ? ' <span class="prepay-status-archived">已归档</span>' : '')) + '</span>' +
       '<span class="prepay-balance">' + moneyText('¥' + (Number(a.balance) || 0).toFixed(2), 'prepay') + '</span>' +
       '</div>' +
-      '<div class="prepay-meta">当前可用预存 · 最近更新 ' + new Date(a.updatedAt || a.createdAt || Date.now()).toLocaleDateString() + '</div>' +
+      '<div class="prepay-meta">' + (a.refunded ? '退款后已锁定 · ' : (a.archived ? '普通归档 · ' : '当前可用预存 · ')) + '最近更新 ' + new Date(a.updatedAt || a.createdAt || Date.now()).toLocaleDateString() + '</div>' +
       history +
       '<div class="prepay-account-actions">' +
       '<button type="button" class="history-toggle" onclick="togglePrepayHistory(\'' + escapeHtml(a.clientId) + '\')" title="收起或展开充值记录">' + (collapsed ? '展开' : '收起') + '</button>' +
-      (a.archived
-        ? '<button type="button" class="restore" onclick="togglePrepayArchived(\'' + escapeHtml(a.clientId) + '\')">恢复</button>'
-        : '<button type="button" class="recharge" onclick="rechargePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">充值</button>' +
-          '<button type="button" class="clear" onclick="clearPrepayBalance(\'' + escapeHtml(a.clientId) + '\')">清空</button>' +
-          '<button type="button" class="archive" onclick="deletePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">删除/归档</button>') +
+      (a.refunded
+        ? '<span class="prepay-locked-note">此账户已永久锁定</span>'
+        : (a.archived
+          ? '<button type="button" class="restore" onclick="togglePrepayArchived(\'' + escapeHtml(a.clientId) + '\')">恢复</button>'
+          : '<button type="button" class="recharge" onclick="rechargePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">充值</button>' +
+            '<button type="button" class="clear" onclick="clearPrepayBalance(\'' + escapeHtml(a.clientId) + '\')">清空</button>' +
+            (Number(a.balance) > 0 ? '<button type="button" class="refund" onclick="refundPrepayAccount(\'' + escapeHtml(a.clientId) + '\')">退款</button>' : '') +
+            '<button type="button" class="archive" onclick="deletePrepayAccount(\'' + escapeHtml(a.clientId) + '\')">删除/归档</button>')) +
       '</div>' +
       '</div>';
   }).join('');
@@ -6664,7 +6719,7 @@ function toggleNavVisible(key) {
 
 function applyNavVisibility() {
   const nav = document.querySelector('.bottom-nav');
-  const order=Array.isArray(profile.navOrder)&&profile.navOrder.length?profile.navOrder:NAV_ITEMS.map(function(n){return n.key;});
+  const order = Array.isArray(profile.navOrder) ? profile.navOrder : NAV_ITEMS.map(function(n){return n.key;});
   if(nav){ order.forEach(function(key){var el=nav.querySelector('.nav-item[data-view=\"'+key+'\"]');if(el)nav.appendChild(el);}); }
   const hidden = Array.isArray(profile.hiddenNavs) ? profile.hiddenNavs : [];
   NAV_ITEMS.forEach(function (n) {
@@ -7024,7 +7079,8 @@ function checkBackupReminder(){
   const v=localStorage.getItem('ryeong_backup_reminder_v1')||'none';
   if(v==='none')return;
   const last=Number(localStorage.getItem('ryeong_last_backup_v1')||0);
-  const setAt=Number(localStorage.getItem('ryeong_backup_reminder_set_at_v1')||0);  const baseline=Math.max(last,setAt);
+  const setAt=Number(localStorage.getItem('ryeong_backup_reminder_set_at_v1')||0);
+  const baseline=Math.max(last,setAt);
   if(baseline && Date.now()-baseline>=Number(v)*86400000){
     setTimeout(function(){toast('该备份啦，可以在设置 → 备份与导出中保存一下');},1200);
   }
@@ -7479,7 +7535,7 @@ function checkBackupReminder(){
 
 
   // 价格标签
-  window.renderPriceTags=function(){var list=$('priceTagList');if(!list)return;priceTags=(priceTags||[]).slice(0,2);list.innerHTML=priceTags.map(function(t,i){return '<div class="price-tag-row"><input class="tag-name" value="'+escapeHtml(t.name||'')+'" placeholder="名称" onchange="updatePriceTag('+i+',\'name\',this.value)"><input class="tag-amount" type="number" min="0" step="0.01" value="'+Number(t.amount||0)+'" onchange="updatePriceTag('+i+',\'amount\',this.value)"><button type="button" onclick="savePriceTag('+i+')">保存</button><button type="button" class="danger" onclick="deletePriceTag('+i+')">×</button></div>';}).join('');var add=$('priceTagAddBox');if(add)add.style.display=priceTags.length>=2?'none':'flex';for(var j=0;j<2;j++){var el=$('priceTag'+j);if(!el)continue;if(priceTags[j]){el.textContent='$'+Number(priceTags[j].amount||0).toString().replace(/\.0+$/,'');el.style.display='inline-flex';}else el.style.display='none';}};
+  window.renderPriceTags=function(){var list=$('priceTagList');if(!list)return;priceTags=(priceTags||[]).slice(0,2);list.innerHTML=priceTags.map(function(t,i){return '<div class="price-tag-row"><input class="tag-name" value="'+escapeHtml(t.name||'')+'" placeholder="名称" onchange="updatePriceTag('+i+',\'name\',this.value)"><input class="tag-amount" type="number" min="0" step="0.01" value="'+(t.amount!=null&&t.amount!==''&&Number(t.amount)>0?escapeHtml(t.amount):'')+'" placeholder="金额" onchange="updatePriceTag('+i+',\'amount\',this.value)"><button type="button" onclick="savePriceTag('+i+')">保存</button><button type="button" class="danger" onclick="deletePriceTag('+i+')">×</button></div>';}).join('');var add=$('priceTagAddBox');if(add)add.style.display=priceTags.length>=2?'none':'flex';for(var j=0;j<2;j++){var el=$('priceTag'+j);if(!el)continue;if(priceTags[j]){el.textContent='$'+Number(priceTags[j].amount||0).toString().replace(/\.0+$/,'');el.style.display='inline-flex';}else el.style.display='none';}};
   window.usePriceTag=function(i){if(priceTags[i])addPrice(Number(priceTags[i].amount)||0);};
   window.openPriceTagManager=function(){renderPriceTags();var m=$('priceTagModal');if(m)m.classList.add('show');document.body.classList.add('lock');};
   window.closePriceTagManager=function(){var m=$('priceTagModal');if(m)m.classList.remove('show');if(!document.querySelector('.modal.show'))document.body.classList.remove('lock');};
@@ -7868,8 +7924,8 @@ function section(title,html){return '<section class="price-suite-section"><h3>'+
 function formatPriceLabel(value){var name=String(value==null?'':value),chars=Array.from(name);if(chars.length===4)return esc(chars.slice(0,2).join(''))+'<br>'+esc(chars.slice(2).join(''));return esc(name);}
 function renderSuite(){var b=document.getElementById('priceSuiteBody');if(!b)return;syncPricePackagesFromTags();var tags=typeof getAllTypes==='function'?getAllTypes():[];var needs=(typeof customNeeds!=='undefined'?customNeeds.filter(function(n){return n&&n.active!==false;}):[{id:'urgent',name:'加急'},{id:'base',name:'加底'}]);
 var mode='';
-var packs=tags.map(function(t){var x=cfg.packages.find(function(p){return String(p.typeId||'')===String(t.id);});if(!x)return '';return '<div class="ps-entry ps-linked-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+formatPriceLabel(t.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" value="'+(Number(x.price)>0?Number(x.price):'')+'" aria-label="'+esc(t.name)+'价格" onchange="editPriceEntry(\'packages\',\''+x.id+'\',\'price\',this.value)"></label><button type="button" class="ps-disable" onclick="togglePriceEntry(\'packages\',\''+x.id+'\')">'+(x.active===false?'启用':'停用')+'</button></div></div>';}).join('');
-var items=needs.map(function(n){var x=cfg.items.find(function(it){return (Array.isArray(it.needs)&&it.needs.indexOf(n.id)>-1)||it.needId===n.id;});if(!x)return '';return '<div class="ps-entry ps-linked-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+formatPriceLabel(n.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" value="'+(Number(x.price)>0?Number(x.price):'')+'" aria-label="'+esc(n.name)+'价格" onchange="editPriceEntry(\'items\',\''+x.id+'\',\'price\',this.value)"></label><button type="button" class="ps-disable" onclick="togglePriceEntry(\'items\',\''+x.id+'\')">'+(x.active===false?'启用':'停用')+'</button></div></div>';}).join('');
+var packs=tags.map(function(t){var x=cfg.packages.find(function(p){return String(p.typeId||'')===String(t.id);});if(!x)return '';return '<div class="ps-entry ps-linked-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+formatPriceLabel(t.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" value="'+(x.price==null||x.price===''||Number(x.price)===0?'':Number(x.price))+'" aria-label="'+esc(t.name)+'价格" onchange="editPriceEntry(\'packages\',\''+x.id+'\',\'price\',this.value)"></label><button type="button" class="ps-disable" onclick="togglePriceEntry(\'packages\',\''+x.id+'\')">'+(x.active===false?'启用':'停用')+'</button></div></div>';}).join('');
+var items=needs.map(function(n){var x=cfg.items.find(function(it){return (Array.isArray(it.needs)&&it.needs.indexOf(n.id)>-1)||it.needId===n.id;});if(!x)return '';return '<div class="ps-entry ps-linked-entry"><div class="ps-entry-fields"><div class="ps-linked-name">'+formatPriceLabel(n.name)+'</div><label class="ps-price-field"><input type="number" min="0" step="0.01" value="'+(x.price==null||x.price===''||Number(x.price)===0?'':Number(x.price))+'" aria-label="'+esc(n.name)+'价格" onchange="editPriceEntry(\'items\',\''+x.id+'\',\'price\',this.value)"></label><button type="button" class="ps-disable" onclick="togglePriceEntry(\'items\',\''+x.id+'\')">'+(x.active===false?'启用':'停用')+'</button></div></div>';}).join('');
 var receipt='<div class="ps-receipt-actions"><button type="button" class="btn-save" onclick="openReceipt(\'month\')">月度小票</button><button type="button" class="btn-save" onclick="openReceipt(\'year\')">年度小票</button><button type="button" class="btn-save" onclick="openReceipt(\'client\')">单主消费小票</button></div><div class="ps-note">标签和需求直接联动；停用只影响后续计价，不改历史订单。</div>';
 b.innerHTML='<div class="stat-block ps-panel"><div class="ps-panel-head"><h4>基础价格</h4></div><div class="ps-entry-list">'+(packs||'<div class="ps-empty">暂无标签，请先在标签管理中新增类型</div>')+'</div></div><div class="stat-block ps-panel"><div class="ps-panel-head"><h4>额外需求</h4></div><div class="ps-entry-list">'+(items||'<div class="ps-empty">暂无需求</div>')+'</div></div><div class="stat-block ps-panel"><h4>工作小票</h4>'+receipt+'</div>';}
 
@@ -7977,7 +8033,7 @@ window.saveOrder=function(){
   if(typeof orders!=='undefined'&&typeof saveData==='function')saveData();
   window.pendingPricingSnapshot=null;
 };
-function receiptDateKey(o){return String(o&&o.orderDate||'');}function getMonth(o){return receiptDateKey(o).slice(0,7);}function allOrders(){return typeof orders!=='undefined'&&Array.isArray(orders)?orders:[];}
+function dateKey(o){return String(o.orderDate||'');}function getMonth(o){return dateKey(o).slice(0,7);}function allOrders(){return typeof orders!=='undefined'&&Array.isArray(orders)?orders:[];}
 window.openReceipt=function(kind){activeReceipt.kind=kind;activeReceipt.key='';activeReceipt.client='';var c=document.getElementById('receiptControls');var now=new Date(),month=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');if(kind==='month'){activeReceipt.key=month;c.innerHTML='<label>选择月份 <input id="receiptPeriod" type="month" value="'+activeReceipt.key+'" onchange="renderReceipt()"></label>';}else if(kind==='year'){activeReceipt.key=String(now.getFullYear());c.innerHTML='<label>选择年份 <input id="receiptPeriod" type="number" min="2000" max="2200" value="'+activeReceipt.key+'" onchange="renderReceipt()"></label>';}else{c.innerHTML='<label>单主 ID <input id="receiptClient" class="ps-input" placeholder="输入单主 ID" onchange="setReceiptClient(this.value)"></label><label>开始日期 <input id="receiptStart" type="date" onchange="renderReceipt()"></label><label>结束日期 <input id="receiptEnd" type="date" onchange="renderReceipt()"></label>';}var m=document.getElementById('receiptModal');document.getElementById('receiptTitle').textContent=kind==='month'?'月度收入小票':kind==='year'?'年度收入小票':'单主消费小票';m.classList.add('show');document.body.classList.add('lock');renderReceipt();};
 window.openClientReceipt=function(clientId){window.openReceipt('client');activeReceipt.client=String(clientId||'');var el=document.getElementById('receiptClient');if(el)el.value=activeReceipt.client;renderReceipt();};
 window.setReceiptClient=function(v){activeReceipt.client=String(v||'').trim();renderReceipt();};
@@ -7985,8 +8041,8 @@ window.saveReceiptBrand=function(v){var t=String(v==null?'':v).trim();if(!t)t='D
 window.closeReceipt=function(){var m=document.getElementById('receiptModal');if(m)m.classList.remove('show');if(!document.querySelector('.modal.show'))document.body.classList.remove('lock');};
 function receiptItemDetails(o){var s=o.pricingSnapshot;if(!s)return '';var out='';var charges=Array.isArray(s.charges)?s.charges:null;if(charges){charges.forEach(function(x){var label=x.kind==='package'?'基础价格：':'额外需求：';out+='<div class="rc-row"><span>'+label+esc(x.name||'未命名')+(x.method==='perImage'?'（按张）':'（按单）')+'</span><span>'+money(Number(x.amount)||0)+'</span></div>';});}else{if(s.packageName)out+='<div class="rc-row"><span>基础价格：'+esc(s.packageName)+'</span><span>'+money((Number(s.packagePrice)||0)*(s.packageMethod==='perOrder'?1:(Number(s.quantity)||1)))+'</span></div>';(s.items||[]).forEach(function(x){var amt=Number(x.amount);if(!Number.isFinite(amt))amt=(Number(x.unitPrice)||0)*(Number(x.qty)||1);out+='<div class="rc-row"><span>额外需求：'+esc(x.name||'未命名')+'</span><span>'+money(amt)+'</span></div>';});}if(s.manual)out+='<div class="rc-small">订单金额已手动调整</div>';return out;}
 function receiptOrderNumber(o){var id=String(o&&o.id||'');if(/^\d{8}-\d{3,}$/.test(id))return id;var d=String(o&&o.orderDate||'').replace(/-/g,'').slice(0,8);if(!/^\d{8}$/.test(d))return '旧订单';var same=allOrders().filter(function(x){return String(x.orderDate||'')===String(o.orderDate||'');}).sort(function(a,b){return (Number(a.createdAt)||0)-(Number(b.createdAt)||0)||String(a.id||'').localeCompare(String(b.id||''));});var reserved={};same.forEach(function(x){var xid=String(x.id||'');if(/^\d{8}-\d{3,}$/.test(xid)&&xid.slice(0,8)===d)reserved[Number(xid.slice(9))]=true;});var seq=1;for(var i=0;i<same.length;i++){var x=same[i],xid=String(x.id||'');if(/^\d{8}-\d{3,}$/.test(xid)&&xid.slice(0,8)===d)continue;while(reserved[seq])seq++;if(x===o||String(x.id)===String(o.id))return d+'-'+String(seq).padStart(3,'0');seq++;}return d+'-001';}
-function receiptOrderBlock(o,includeClient){var q=parseInt(o.quantity,10)||1,amt=(Number(o.price)||0)*q,pre=Math.min(amt,Math.max(0,Number(o.prepaidAmount)||0)),explicitDirect=Number(o.directPaymentAmount)>0?Number(o.directPaymentAmount):(Number(o.otherPaymentAmount)>0?Number(o.otherPaymentAmount):0),hasPaymentData=true,other=Math.max(0,amt-pre);if(explicitDirect>0)other=Math.min(amt-pre,explicitDirect);var tags=(o.typeNames||[]).filter(Boolean).join('、')||'—',needLabel=(Array.isArray(o.needNames)?o.needNames.slice():[]);if(o.status==='加急'&&needLabel.indexOf('加急')<0&&needLabel.indexOf('次日加急')<0)needLabel.push('次日加急');needLabel=needLabel.map(function(n){return n==='加急'?'次日加急':n;});var date=receiptDateKey(o)||'—';var out='<div class="rc-item"><div class="rc-row rc-date-total"><b>'+esc(date.replace(/-/g,'/'))+'</b><b>'+money(amt)+'</b></div><div class="rc-order-no">订单：'+esc(receiptOrderNumber(o))+'</div>';if(includeClient)out+='<div>单主：'+esc(o.clientId||'—')+'</div>';out+='<div>标签：'+esc(tags)+(needLabel.length?'　需求：'+esc(needLabel.join('、')):'')+'　数量：'+q+'</div>'+receiptItemDetails(o);if(pre>0.000001)out+='<div class="rc-row"><span>预存抵扣</span><span>'+money(pre)+'</span></div>';if(other>0.000001)out+='<div class="rc-row"><span>直接支付'+(o.paymentMethod?'（'+esc(o.paymentMethod)+'）':'')+'</span><span>'+money(other)+'</span></div>';out+='</div><div class="rc-line"></div>';return {html:out,amount:amt,quantity:q,prepaid:pre,other:other,hasPrepaid:pre>0.000001,hasDirect:other>0.000001};}
-window.renderReceipt=function(){var period=document.getElementById('receiptPeriod');if(period)activeReceipt.key=period.value||activeReceipt.key;var os=allOrders().slice();if(activeReceipt.kind==='month')os=os.filter(function(o){return getMonth(o)===activeReceipt.key;});if(activeReceipt.kind==='year')os=os.filter(function(o){return receiptDateKey(o).slice(0,4)===activeReceipt.key;});if(activeReceipt.kind==='client'){var ci=(document.getElementById('receiptClient')||{}).value||activeReceipt.client||'';activeReceipt.client=ci.trim();os=os.filter(function(o){return String(o.clientId||'')===activeReceipt.client;});var st=(document.getElementById('receiptStart')||{}).value||'',en=(document.getElementById('receiptEnd')||{}).value||'';if(st)os=os.filter(function(o){return receiptDateKey(o)>=st;});if(en)os=os.filter(function(o){return receiptDateKey(o)<=en;});}os.sort(function(a,b){return receiptDateKey(a).localeCompare(receiptDateKey(b))||(Number(a.createdAt)||0)-(Number(b.createdAt)||0)||String(a.id).localeCompare(String(b.id));});var paper=document.getElementById('receiptPaper');var yOrM=activeReceipt.kind==='year'?(String(activeReceipt.key||new Date().getFullYear())+'年收入'):activeReceipt.kind==='month'?(String(activeReceipt.key||'').slice(0,4)+'年'+String(activeReceipt.key||'').slice(5,7)+'月收入'):'单主消费';var title=esc(receiptBrand.title||'DIY');var out='<div class="rc-center rc-brand"><h3 contenteditable="true" role="textbox" aria-label="点击编辑小票大标题" spellcheck="false" oninput="saveReceiptBrand(this.textContent)" onblur="saveReceiptBrand(this.textContent)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="点击修改标题">'+title+'</h3><div class="rc-subtitle">'+esc(yOrM)+' · May fortune find you, today and always.</div></div><div class="rc-line"></div>';var total=0,qty=0,consumption=0,prepaid=0,otherPaid=0,hasPrepaid=false,hasDirect=false;
+function receiptOrderBlock(o,includeClient){var q=parseInt(o.quantity,10)||1,amt=(Number(o.price)||0)*q,pre=Math.min(amt,Math.max(0,Number(o.prepaidAmount)||0)),explicitDirect=Number(o.directPaymentAmount)>0?Number(o.directPaymentAmount):(Number(o.otherPaymentAmount)>0?Number(o.otherPaymentAmount):0),hasPaymentData=true,other=Math.max(0,amt-pre);if(explicitDirect>0)other=Math.min(amt-pre,explicitDirect);var tags=(o.typeNames||[]).filter(Boolean).join('、')||'—',needLabel=(Array.isArray(o.needNames)?o.needNames.slice():[]);if(o.status==='加急'&&needLabel.indexOf('加急')<0&&needLabel.indexOf('次日加急')<0)needLabel.push('次日加急');needLabel=needLabel.map(function(n){return n==='加急'?'次日加急':n;});var date=dateKey(o)||'—';var out='<div class="rc-item"><div class="rc-row rc-date-total"><b>'+esc(date.replace(/-/g,'/'))+'</b><b>'+money(amt)+'</b></div><div class="rc-order-no">订单：'+esc(receiptOrderNumber(o))+'</div>';if(includeClient)out+='<div>单主：'+esc(o.clientId||'—')+'</div>';out+='<div>标签：'+esc(tags)+(needLabel.length?'　需求：'+esc(needLabel.join('、')):'')+'　数量：'+q+'</div>'+receiptItemDetails(o);if(pre>0.000001)out+='<div class="rc-row"><span>预存抵扣</span><span>'+money(pre)+'</span></div>';if(other>0.000001)out+='<div class="rc-row"><span>直接支付'+(o.paymentMethod?'（'+esc(o.paymentMethod)+'）':'')+'</span><span>'+money(other)+'</span></div>';out+='</div><div class="rc-line"></div>';return {html:out,amount:amt,quantity:q,prepaid:pre,other:other,hasPrepaid:pre>0.000001,hasDirect:other>0.000001};}
+window.renderReceipt=function(){var period=document.getElementById('receiptPeriod');if(period)activeReceipt.key=period.value||activeReceipt.key;var os=allOrders().slice();if(activeReceipt.kind==='month')os=os.filter(function(o){return getMonth(o)===activeReceipt.key;});if(activeReceipt.kind==='year')os=os.filter(function(o){return dateKey(o).slice(0,4)===activeReceipt.key;});if(activeReceipt.kind==='client'){var ci=(document.getElementById('receiptClient')||{}).value||activeReceipt.client||'';activeReceipt.client=ci.trim();os=os.filter(function(o){return String(o.clientId||'')===activeReceipt.client;});var st=(document.getElementById('receiptStart')||{}).value||'',en=(document.getElementById('receiptEnd')||{}).value||'';if(st)os=os.filter(function(o){return dateKey(o)>=st;});if(en)os=os.filter(function(o){return dateKey(o)<=en;});}os.sort(function(a,b){return dateKey(a).localeCompare(dateKey(b))||(Number(a.createdAt)||0)-(Number(b.createdAt)||0)||String(a.id).localeCompare(String(b.id));});var paper=document.getElementById('receiptPaper');var yOrM=activeReceipt.kind==='year'?(String(activeReceipt.key||new Date().getFullYear())+'年收入'):activeReceipt.kind==='month'?(String(activeReceipt.key||'').slice(0,4)+'年'+String(activeReceipt.key||'').slice(5,7)+'月收入'):'单主消费';var title=esc(receiptBrand.title||'DIY');var out='<div class="rc-center rc-brand"><h3 contenteditable="true" role="textbox" aria-label="点击编辑小票大标题" spellcheck="false" oninput="saveReceiptBrand(this.textContent)" onblur="saveReceiptBrand(this.textContent)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="点击修改标题">'+title+'</h3><div class="rc-subtitle">'+esc(yOrM)+' · May fortune find you, today and always.</div></div><div class="rc-line"></div>';var total=0,qty=0,consumption=0,prepaid=0,otherPaid=0,hasPrepaid=false,hasDirect=false;
 if(activeReceipt.kind==='year'){var y=String(activeReceipt.key||new Date().getFullYear());for(var m=1;m<=12;m++){var k=y+'-'+String(m).padStart(2,'0');var sum=typeof getIncomeSummary==='function'?getIncomeSummary(k,true).total:0;total+=sum;out+='<div class="rc-item"><div class="rc-row"><b>'+esc(k.replace('-','年')+'月')+'</b><b>'+money(sum)+'</b></div><div class="rc-small">当月收入（含标记为不计入本月的预存收入）</div></div>'; }out+='<div class="rc-line"></div><div class="rc-row rc-total"><span>全年收入合计</span><b>'+money(total)+'</b></div>';}
 else if(activeReceipt.kind==='month'){var income=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).total:0;var orderIncome=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).orderIncome:0;var rechargeIncome=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).prepayIncome:0;out+='<div class="rc-row"><span>本月收入合计</span><b>'+money(income)+'</b></div><div class="rc-row"><span>订单收入</span><span>'+money(orderIncome||0)+'</span></div><div class="rc-row"><span>预存充值收入</span><span>'+money(rechargeIncome||Math.max(0,income-(orderIncome||0)))+'</span></div><div class="rc-line"></div><h4>订单明细</h4>';os.forEach(function(o){var r=receiptOrderBlock(o,true);qty+=r.quantity;consumption+=r.amount;prepaid+=r.prepaid;otherPaid+=r.other;hasPrepaid=hasPrepaid||r.hasPrepaid;hasDirect=hasDirect||r.hasDirect;out+=r.html;});out+='<div class="rc-row"><span>订单消费金额（非收入统计）</span><b>'+money(consumption)+'</b></div>';}
 else {out+='<div class="rc-client-summary"><div>单主：'+esc(activeReceipt.client||'—')+'</div><div class="rc-small">消费记录'+(document.getElementById('receiptStart')&&document.getElementById('receiptStart').value?' · '+esc(document.getElementById('receiptStart').value):'')+(document.getElementById('receiptEnd')&&document.getElementById('receiptEnd').value?' 至 '+esc(document.getElementById('receiptEnd').value):'')+'</div></div><div class="rc-line"></div><h4>消费明细</h4>';os.forEach(function(o){var r=receiptOrderBlock(o,false);qty+=r.quantity;consumption+=r.amount;prepaid+=r.prepaid;otherPaid+=r.other;hasPrepaid=hasPrepaid||r.hasPrepaid;hasDirect=hasDirect||r.hasDirect;out+=r.html;});out+='<div class="rc-line"></div><div class="rc-row"><span>订单数</span><span>'+os.length+'</span></div><div class="rc-row"><span>数量合计</span><span>'+qty+' 张</span></div><div class="rc-line"></div><div class="rc-row rc-total"><span>消费总额</span><b>'+money(consumption)+'</b></div>';if(hasPrepaid)out+='<div class="rc-row"><span>预存抵扣合计</span><span>'+money(prepaid)+'</span></div>';if(hasDirect)out+='<div class="rc-row"><span>直接支付合计</span><span>'+money(otherPaid)+'</span></div>';}
@@ -7999,7 +8055,7 @@ window.downloadReceiptPng=function(){
   var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   try{
     /* iOS 必须在点击事件同步打开备用页，避免异步生成图片后被弹窗拦截。 */
-    /* iOS Safari 切换到 about:blank 后可能暂停原页面的异步渲染；改为在当前页面显示图片预览，不再预开空白标签页。 */
+    if(isIOS){try{fallbackTab=window.open('about:blank','_blank');}catch(e){fallbackTab=null;}}
     if(!paper.textContent.trim()){if(fallbackTab)fallbackTab.close();if(typeof toast==='function')toast('小票内容为空，暂时无法导出');return;}
     function loadHtml2Canvas(){
       if(window.html2canvas)return Promise.resolve(window.html2canvas);
@@ -8023,7 +8079,8 @@ window.downloadReceiptPng=function(){
         }
         tryNext();
       });
-      return window.__receiptHtml2CanvasPromise;    }
+      return window.__receiptHtml2CanvasPromise;
+    }
     if(typeof toast==='function')toast('正在按原样生成小票图片…');
     loadHtml2Canvas().then(function(capture){
       /* 复制整张小票到离屏容器，保留 #receiptModal 选择器和原 CSS；解除滚动框高度限制，确保月度长单不被截断。 */
@@ -8032,7 +8089,7 @@ window.downloadReceiptPng=function(){
       if(!content)throw new Error('找不到小票排版容器');
       cloneRoot=document.createElement('div');
       cloneRoot.id='receiptModal';cloneRoot.className='modal show';
-      cloneRoot.style.cssText='display:block!important;position:fixed!important;left:0!important;top:0!important;width:100vw!important;height:auto!important;max-height:none!important;overflow:visible!important;z-index:-1!important;pointer-events:none!important;background:transparent!important;';
+      cloneRoot.style.cssText='display:block!important;position:fixed!important;left:-100000px!important;top:0!important;width:100vw!important;height:auto!important;max-height:none!important;overflow:visible!important;z-index:-1!important;background:transparent!important;';
       var clonedContent=content.cloneNode(true);
       clonedContent.style.cssText+=';width:'+Math.max(280,Math.min(760,content.getBoundingClientRect().width))+'px!important;max-width:none!important;max-height:none!important;height:auto!important;overflow:visible!important;display:block!important;position:static!important;margin:0!important;';
       var clonedPaper=clonedContent.querySelector('#receiptPaper');
@@ -8051,32 +8108,6 @@ window.downloadReceiptPng=function(){
         var file=null;try{file=new File([blob],filename,{type:'image/png'});}catch(e){}
         window.__receiptPngFile=file;
         var opened=false;
-        if(isIOS){
-          var oldPreview=document.getElementById('receiptPngPreviewOverlay');
-          if(oldPreview)oldPreview.remove();
-          var preview=document.createElement('div');
-          preview.id='receiptPngPreviewOverlay';
-          preview.style.cssText='position:fixed;inset:0;z-index:2147483647;overflow:auto;background:#fff8fb;padding:18px;box-sizing:border-box;text-align:center;color:#594650;font:15px -apple-system,BlinkMacSystemFont,sans-serif;';
-          var close=document.createElement('button');
-          close.type='button';close.textContent='返回小票';
-          close.style.cssText='border:0;border-radius:12px;padding:11px 18px;background:#eab7cc;color:#63394c;font-size:15px;font-weight:700;margin:8px;';
-          close.onclick=function(){preview.remove();};
-          var share=document.createElement('button');
-          share.type='button';share.textContent='分享 / 保存图片';
-          share.style.cssText=close.style.cssText;
-          share.onclick=function(){window.__receiptShareFromPreview();};
-          var note=document.createElement('p');
-          note.textContent='PNG 已生成。可点击“分享 / 保存图片”并选择“存储图像”，也可以长按下方图片保存。';
-          note.style.cssText='line-height:1.6;margin:12px auto;';
-          var img=document.createElement('img');
-          img.alt='工作小票 PNG';img.src=blobUrl;
-          img.style.cssText='display:block;width:100%;height:auto;max-width:760px;margin:14px auto;background:#fff;';
-          var name=document.createElement('p');name.textContent='文件名：'+filename;
-          preview.appendChild(close);preview.appendChild(share);preview.appendChild(note);preview.appendChild(img);preview.appendChild(name);
-          document.body.appendChild(preview);
-          if(typeof toast==='function')toast('PNG 已生成，请在页面中长按图片或使用分享按钮保存');
-          return;
-        }
         if(fallbackTab){
           try{
             fallbackTab.document.open();
