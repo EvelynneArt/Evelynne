@@ -3618,14 +3618,30 @@ function buildThemeCSS(vars) {
   merged['red'] = vars['red'] || merged['pink-700'];
   merged['amber'] = vars['amber'] || merged['pink-600'];
 
+  /* 所有主题共享同一组界面强调色与阴影色，避免组件继续残留默认粉色。 */
+  var themeShadow = mkAlpha(primary, dark ? 0.24 : 0.14);
+  var themeShadowSoft = mkAlpha(primary, dark ? 0.16 : 0.09);
+  var themeFocus = mkAlpha(primary, dark ? 0.30 : 0.20);
   var lines = THEME_VAR_KEYS.map(function(k){ return '--' + k + ': ' + (merged[k] || DEFAULT_THEME_VARS[k] || '') + ';'; });
+  lines.push('--theme-shadow: ' + themeShadow + ';');
+  lines.push('--theme-shadow-soft: ' + themeShadowSoft + ';');
+  lines.push('--theme-focus-ring: ' + themeFocus + ';');
   return ':root{' + lines.join('') + '}' +
     '.deadline-title{color:var(--urgent-text)!important}' +
     '.deadline-title .deadline-count{background:var(--urgent-badge-bg)!important;color:var(--urgent-badge-text)!important}' +
     '.deadline-remain{color:var(--urgent-text)!important}' +
     '.unpriced-banner{color:var(--normal-text)!important}' +
     '.filter-tag{color:var(--text-sub)}' +
-    '.theme-live-preview,.theme-diy-preview{background:var(--bg-base)}';
+    '.theme-live-preview,.theme-diy-preview{background:var(--bg-base)}' +
+    /* 头像、顶栏、资料卡及选择态统一读取当前主题变量，不保留硬编码粉色光晕。 */ 
+    '.avatar-preview{background:linear-gradient(135deg,var(--pink-100),var(--pink-200))!important;box-shadow:0 6px 16px var(--theme-shadow),inset 0 1px 0 var(--card-bg)!important}' +
+    '.avatar-cell{background:var(--pink-50)!important;border-color:var(--card-border)}' +
+    '.app-header{background:var(--header-bg)!important;box-shadow:0 4px 18px var(--theme-shadow-soft)}' +
+    '.profile-card,.profile-panel,.user-profile-card,.settings-profile-card{background:var(--card-bg)!important;border-color:var(--card-border)!important;box-shadow:0 6px 20px var(--theme-shadow-soft)!important}' +
+    'button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline-color:var(--pink-400)!important;box-shadow:0 0 0 3px var(--theme-focus-ring)!important}' +
+    '.need-input:focus,.amount-group input[type=number]:focus{box-shadow:0 0 0 4px var(--theme-focus-ring)!important}' +
+    '.btn-primary,.primary-btn,.order-top-save,.nav-settings-save{background:linear-gradient(135deg,var(--pink-400),var(--pink-600))!important}' +
+    '.modal,.modal-content,.sheet,.settings-panel{border-color:var(--card-border)}';
 }
 
 function applyThemeVars(vars) {
