@@ -4062,6 +4062,8 @@ function loadProfile() {
     profile.avatarData = saved.avatarData || '';
     profile.avatarShape = ['rounded','circle'].indexOf(saved.avatarShape) > -1 ? saved.avatarShape : 'rounded';
     profile.hiddenNavs = Array.isArray(saved.hiddenNavs) ? saved.hiddenNavs.filter(function (k) { return k !== 'workspace'; }) : [];
+    profile.navOrder = Array.isArray(saved.navOrder) ? saved.navOrder.filter(function (k, i, a) { return typeof k === 'string' && a.indexOf(k) === i; }) : NAV_ITEMS.map(function (n) { return n.key; });
+    NAV_ITEMS.forEach(function (n) { if (profile.navOrder.indexOf(n.key) < 0) profile.navOrder.push(n.key); });
   }
 }
 
@@ -4337,7 +4339,15 @@ function switchView(name) {
     try { renderIncome(); } catch (e) {}
   }
   if (name === 'priceSuite') {
-    try { if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage(); else if (typeof window.openPriceSuite === 'function') window.openPriceSuite(); } catch (e) { console.error('价格表页面渲染失败', e); }
+    try {
+      if (typeof window.renderPriceSuitePage === 'function') window.renderPriceSuitePage();
+      else if (typeof window.openPriceSuite === 'function') window.openPriceSuite();
+      else console.error('价格表渲染函数未加载');
+    } catch (e) {
+      console.error('价格表页面渲染失败', e);
+      var priceBody = $('priceSuiteBody');
+      if (priceBody && !priceBody.innerHTML.trim()) priceBody.innerHTML = '<div class="stat-block"><h4>价格表暂时无法加载</h4><p>请刷新重试；当前价格数据未被此提示修改或清除。</p></div>';
+    }
   }
 }
 
