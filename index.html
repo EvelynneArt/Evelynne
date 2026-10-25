@@ -4876,11 +4876,11 @@ function buildOrderCard(o) {
 
   let priceHtml = '';
   if (hasPrice) {
-    if (o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))) {
-      priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.pricingSnapshot.calculatedTotal).toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
-    } else {
-      priceHtml += '<span class="order-price">' + uiMoney('¥' + Number(o.price).toFixed(2), 'income') + '</span>';
-    }
+    // 统一卡片价格展示：所有已标价订单都显示总额；旧订单没有计价快照时按单价 × 数量计算。
+    const cardTotal = o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))
+      ? Number(o.pricingSnapshot.calculatedTotal)
+      : Number(o.price) * qty;
+    priceHtml += '<span class="order-price">' + uiMoney('¥' + cardTotal.toFixed(2), 'income') + '<small style="font-size:9px;font-weight:500;color:var(--text-light);margin-left:3px;">总额</small></span>';
   } else {
     priceHtml += '<span class="order-price missing">未标价</span>';
   }
