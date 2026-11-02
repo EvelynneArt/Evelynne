@@ -459,7 +459,28 @@ input, textarea { -webkit-user-select: text; user-select: text; }
   display:flex; align-items:center; gap:8px; margin-top:8px;
   font-size:12.5px; color:var(--text-main); font-weight:700;
 }
-.prepay-toggle input { width:18px; height:18px; accent-color:var(--pink-500); }
+/* 预存勾选：明确的方形勾选状态，颜色跟随主题变量 */
+.prepay-toggle input {
+  appearance:none; -webkit-appearance:none; flex:0 0 21px;
+  width:21px; height:21px; margin:0 2px 0 0;
+  display:inline-grid !important; place-content:center;
+  border:2px solid var(--text-light); border-radius:6px;
+  background:var(--card-bg); cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease;
+}
+.prepay-toggle input:checked {
+  background:var(--pink-600); border-color:var(--pink-600);
+  box-shadow:0 2px 7px color-mix(in srgb,var(--pink-600) 28%,transparent);
+}
+.prepay-toggle input:checked::after {
+  content:""; width:10px; height:6px;
+  border-left:2px solid #fff; border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translate(1px,-1px);
+}
+.prepay-toggle input:active { transform:scale(.9); }
+.prepay-toggle { cursor:pointer; padding:7px 9px; border-radius:10px; transition:background .16s ease,border-color .16s ease; }
+.prepay-toggle.is-checked { background:color-mix(in srgb,var(--pink-500) 13%,var(--card-bg)); }
+.prepay-toggle:not(.is-checked) { background:var(--surface-2,transparent); }
 .prepay-preview { margin-left:auto; color:var(--pink-600); }
 
 /* ========== 收入视图 ========== */
@@ -997,7 +1018,8 @@ body.multi-select-on .bottom-nav, body.multi-select-on nav.bottom-nav { z-index:
 .wheel-track::-webkit-scrollbar { display: none; }
 .wheel-item {
   height: 20px; display: flex;
-  align-items: center; justify-content: center;  font-size: 13px; font-weight: 600;
+  align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
   color: var(--text-main); scroll-snap-align: center;
   transition: color 0.2s, font-size 0.2s, opacity 0.2s;
   opacity: 0.72;
@@ -1996,7 +2018,8 @@ body.multi-select-on #view-schedule .swipe-actions{display:none !important;}
 .order-note-row{display:flex;align-items:stretch;gap:8px;width:100%;}
 .order-note-row textarea{flex:1;min-width:0;box-sizing:border-box;}
 .order-note-row .copy-note-btn{flex:0 0 auto;align-self:stretch;border:1px solid rgba(232,205,216,.9)!important;border-radius:14px!important;outline:none!important;box-shadow:none!important;}
-.amount-qty-row{align-items:center;gap:14px;}.amount-group{flex:1;min-width:0;}
+.amount-qty-row{align-items:center;gap:14px;}
+.amount-group{flex:1;min-width:0;}
 .amount-group input#price{width:100%;box-sizing:border-box;}
 .wheel-picker.small{flex:0 0 88px;width:88px;box-sizing:border-box;border:1px solid rgba(232,205,216,.9)!important;border-radius:16px!important;outline:none!important;box-shadow:none!important;}
 .wheel-highlight{border-left-color:rgba(255,184,206,.6)!important;border-right-color:rgba(255,184,206,.6)!important;}
@@ -2826,6 +2849,7 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
         <div class="income-mini" id="incBlock-month"><div class="mini-label">本月收入</div><div class="money-value-row"><div class="mini-value" style="color:var(--pink-600)" id="incomeMonth">¥0.00</div></div><div class="income-cmp flat" id="incomeCmp" style="margin-top:6px;font-size:10px;padding:2px 6px;"><span class="cmp-arrow">—</span><span id="incomeCmpText">暂无上月数据</span></div></div>
         <div class="income-mini" id="incBlock-total" onclick="openCumulativeIncomeBreakdown()" style="cursor:pointer;" title="点击查看累计收入构成"><div class="mini-label">累计收入</div><div class="mini-value" id="incomeTotal">¥0</div></div>
         <div class="income-mini" id="incBlock-orders"><div class="mini-label">订单总数</div><div class="mini-value" id="incomeOrders">0</div></div>
+        <div class="income-mini" id="incBlock-pure-order"><div class="mini-label">本月纯订单金额</div><div class="mini-value" id="statPureOrderAmount">¥0.00</div></div>
       </div>
 
       <div class="month-stats" id="incBlock-months">
@@ -2929,12 +2953,11 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
     </div>
 
     <div class="field">
-      <label>金额 &amp; 数量</label>
+      <label>订单总额 &amp; 数量</label>
       <div class="amount-qty-row">
         <div class="amount-group">
           <input type="number" id="price" placeholder="0" autocomplete="off" step="0.01" inputmode="decimal" oninput="updatePrepayPanel()">
           <div class="price-chips">
-            <span class="price-chip manage-price" onclick="autoCalculateCurrentPrice()">自动计算</span>
             <span class="price-chip clear" onclick="clearPrice()">清零</span>
           </div>
         </div>
@@ -2995,7 +3018,8 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
       <div class="avatar-tools">
         <label class="avatar-tool-btn" for="avatarFile">🖼️ 上传图片</label>
         <button type="button" onclick="resetAvatar()">↺ 恢复默认</button>
-      </div>      <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+      </div>
+      <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
     </div>
 
     <div class="field">
@@ -3142,7 +3166,7 @@ body.hide-all-money input[type=number],body.hide-all-money input[inputmode=decim
 <div class="modal" id="settingsModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2>⚙️ 设置 <span class="settings-version">v1.6.51</span></h2>
+      <h2>⚙️ 设置 <span class="settings-version">v1.6.60</span></h2>
       <button class="modal-close" onclick="closeSettings()">←</button>
     </div>
 
@@ -3994,7 +4018,8 @@ function syncUsedOrderIds() {
   (Array.isArray(orders) ? orders : []).forEach(function(o){ if(o && o.id) used.add(String(o.id)); });
   (Array.isArray(trash) ? trash : []).forEach(function(t){ if(t && t.id) used.add(String(t.id)); if(t && t.order && t.order.id) used.add(String(t.order.id)); });
   usedOrderIdsMemory = used;
-  try { window.localStorage.setItem('ryeong_used_order_ids_v1', JSON.stringify(Array.from(used))); } catch(e) {}  return used;
+  try { window.localStorage.setItem('ryeong_used_order_ids_v1', JSON.stringify(Array.from(used))); } catch(e) {}
+  return used;
 }
 function generateOrderId(orderDate) {
   // 格式：YYYYMMDD-当日序号；同日从 001 起，已使用/删除的编号不复用。
@@ -4565,6 +4590,7 @@ function renderDeadlineSection() {
 
   list.innerHTML = upcoming.map(function (o) {
     const qty = parseInt(o.quantity, 10) || 1;
+    const remainingQty = Math.max(0, qty - getOutputTotal(o));
     const isUrgent = o.status === '加急';
     const typeIds = Array.isArray(o.typeIds) ? o.typeIds : (o.typeId ? [o.typeId] : []);
     const types = typeIds.map(function (id) { return getAllTypes().find(function (t) { return t.id === id; }); }).filter(Boolean);
@@ -4582,10 +4608,10 @@ function renderDeadlineSection() {
 
     return '<div class="deadline-card' + (isUrgent ? '' : ' normal') + '" onclick="openForm(\'' + o.id + '\')">' +
       '<div class="deadline-head">' +
-        '<span class="deadline-name">' + escapeHtml(o.clientId) + '</span>' +
+        '<span class="deadline-name" onclick="copyId(event, \'' + escapeHtml(o.clientId) + '\')" title="点击复制 ID">' + escapeHtml(o.clientId) + '</span>' +
         '<button class="deadline-badge" onclick="markDoneFromDeadline(event, \'' + o.id + '\')">' + (isUrgent ? '加急' : '普通') + '</button>' +
       '</div>' +
-      '<div class="deadline-meta">' + escapeHtml(typeNames) + (qty > 1 ? ' <span class="deadline-qty">x' + qty + '</span>' : '') + '</div>' +
+      '<div class="deadline-meta">' + escapeHtml(typeNames) + (remainingQty > 1 ? ' <span class="deadline-qty">剩余 x' + remainingQty + '</span>' : ' <span class="deadline-qty">剩余 1 张</span>') + '</div>' +
       (o.deadline ? '<div class="deadline-deadline">⏰ 截止 ' + escapeHtml(o.deadline) + '<span class="deadline-remain">· ' + remainText + '</span></div>' : '') +
     '</div>';
   }).join('');
@@ -4964,7 +4990,7 @@ function buildOrderCard(o) {
   const qty = parseInt(o.quantity, 10) || 1;
   const isDone = getOutputTotal(o) >= qty;
   const isLocked = o.locked === true;
-  const hasPrice = o.price && Number(o.price) > 0;
+  const hasPrice = (o.totalAmount != null && Number(o.totalAmount) > 0) || (o.price && Number(o.price) > 0);
   const staleDays = getStaleDays(o);
   const isStale = staleDays >= STALE_DAYS;
   const isSemiStale = staleDays >= 7 && !isStale;
@@ -4990,10 +5016,11 @@ function buildOrderCard(o) {
 
   let priceHtml = '';
   if (hasPrice) {
-    const orderTotal = o.pricingSnapshot && Number.isFinite(Number(o.pricingSnapshot.calculatedTotal))
-      ? Number(o.pricingSnapshot.calculatedTotal)
+    const orderTotal = typeof window.getOrderTotalAmount === 'function'
+      ? window.getOrderTotalAmount(o)
       : (Number(o.price) || 0) * Math.max(1, Number(qty) || 1);
-    priceHtml += '<span class="order-price">' + uiMoney('¥' + orderTotal.toFixed(2), 'income') + '<small class="order-total-label">总额</small></span>';  } else {
+    priceHtml += '<span class="order-price">' + uiMoney('¥' + orderTotal.toFixed(2), 'income') + '<small class="order-total-label">总额</small></span>';
+  } else {
     priceHtml += '<span class="order-price missing">未标价</span>';
   }
   if (qty > 1) priceHtml += '<span class="order-quantity">x' + qty + '</span>';
@@ -5109,7 +5136,7 @@ function copyOrderInfo(e, id) {
   lines.push('类型：' + typeNames + (o.hasBase ? ' + 加底' : ''));
   if (Array.isArray(o.needNames)&&o.needNames.length) lines.push('需求：'+o.needNames.join('、')); else if (o.customNeed) lines.push('需求：' + o.customNeed);
   if (o.orderNote) lines.push('备注：' + o.orderNote);
-  if (o.price) lines.push('金额：'+uiMoney('¥' + Number(o.price).toFixed(2), 'income') + (qty > 1 ? ' × ' + qty : ''));
+  if (o.price) lines.push('订单总额：'+uiMoney('¥' + (typeof window.getOrderTotalAmount==='function'?window.getOrderTotalAmount(o):Number(o.price)*qty).toFixed(2), 'income'));
   if (o.status === '加急') lines.push('状态：加急');
   if (o.deadline) lines.push('截止：' + o.deadline);
   const text = lines.join('\n');
@@ -5597,17 +5624,25 @@ function renderCalendar() {
 
   const countMap = {};
   orders.forEach(function(o){
-    if(scheduleSortKey==='quantity'){
-      getOutputRecords(o).forEach(function(r){
-        if(!r.date) return;
-        countMap[r.date]=(countMap[r.date]||0)+(Number(r.qty)||0);
-      });
-    }else{
-      const ds=getCalendarDateForOrder(o); if(!ds)return;
-      const qty=parseInt(o.quantity,10)||1;
-      const remaining=Math.max(0,qty-getOutputTotal(o));
-      if(remaining>0)countMap[ds]=(countMap[ds]||0)+remaining;
+    const qty=Math.max(1,parseInt(o.quantity,10)||1);
+    if(scheduleSortKey==='orderDate'){
+      /* 排单排列：角标代表当天创建的订单总数（张数），完成状态不影响角标。 */
+      const ds=o.orderDate||'';
+      if(ds)countMap[ds]=(countMap[ds]||0)+qty;
+      return;
     }
+    if(scheduleSortKey==='quantity'){
+      /* 出图排列：角标代表当天实际完成出图的数量。 */
+      getOutputRecords(o).forEach(function(r){
+        const ds=r.date||'',n=Math.max(0,Number(r.qty)||0);
+        if(ds&&n>0)countMap[ds]=(countMap[ds]||0)+n;
+      });
+      return;
+    }
+    /* DDL 排列：只统计截止日期当天尚未完成的图片数量。 */
+    const ds=o.deadline||'';
+    const remaining=Math.max(0,qty-getOutputTotal(o));
+    if(ds&&remaining>0)countMap[ds]=(countMap[ds]||0)+remaining;
   });
 
   const todayStr = todayKey();
@@ -5992,7 +6027,8 @@ function validateOutputInputsBeforeSave(o){
   }
   if(total>qty){
     toast('出图总数量为 '+total+' 张，已经超过订单数量 '+qty+' 张，请先修改后再保存');
-    return false;  }
+    return false;
+  }
   return true;
 }
 function updateOutputRecord(index,value){if(!editingOrderId)return;const o=orders.find(function(x){return x.id===editingOrderId;});if(!o)return;if(!Array.isArray(o.outputRecords))o.outputRecords=[];if(!o.outputRecords[index])return;o.outputRecords[index].date=value;syncOutputStatus(o);saveData();renderOutputRecords(o);refreshAll();}
@@ -6585,7 +6621,7 @@ function renderPrepay() {
         const counted = l.countInIncome !== false;
         const actions = isRecharge && !a.refunded
           ? '<div class="prepay-record-actions">' +
-            '<button type="button" onclick="editPrepayment(\'' + escapeHtml(l.id) + '\')">修改</button>' +
+            '<button type="button" onclick="editPrepayment(\'' + escapeHtml(l.id) + '\')">修改</button>' + (window.canRevokeLatestRecharge && window.canRevokeLatestRecharge(l) ? '<button type="button" onclick="revokeLatestRecharge(\'' + escapeHtml(l.id) + '\')">撤销充值</button>' : '') +
             '<button type="button" class="record-count-toggle' + (counted ? '' : ' off') + '" onclick="togglePrepayRecordCountInIncome(\'' + escapeHtml(l.id) + '\')" title="只切换这一笔预存是否计入本月收入">' + (counted ? '计入' : '不计入') + '</button>' +
             '</div>'
           : '';
@@ -6838,7 +6874,7 @@ function renderTrash() {
       return '<div class="trash-item">' +
         '<div class="ti-head"><span class="ti-name">' + escapeHtml(o.clientId) + '</span>' +
         '<span class="ti-remain' + (isUrgent ? ' urgent' : '') + '">剩余 ' + remainDays + ' 天</span></div>' +
-        '<div class="ti-meta">' + escapeHtml(typeNames) + (o.price ? ' · ¥' + Number(o.price).toFixed(2) : '') + '</div>' +
+        '<div class="ti-meta">' + escapeHtml(typeNames) + ((typeof window.getOrderTotalAmount === 'function' ? window.getOrderTotalAmount(o) : (Number(o.price) || 0) * (parseInt(o.quantity, 10) || 1)) > 0 ? ' · ¥' + (typeof window.getOrderTotalAmount === 'function' ? window.getOrderTotalAmount(o) : (Number(o.price) || 0) * (parseInt(o.quantity, 10) || 1)).toFixed(2) : '') + '</div>' +
         '<div class="ti-actions"><button type="button" class="ti-restore" onclick=\'restoreTrash("' + escapeHtml(String(t.id)) + '")\'>恢复</button>' +
         '<button type="button" class="ti-delete" onclick=\'deleteTrash("' + escapeHtml(String(t.id)) + '")\'>彻底删除</button></div></div>';
     }).join('');
@@ -6991,7 +7027,8 @@ function saveBackupReminder(){
 }
 function dataForExport(){var out={version:2,orders:orders,trash:trash,prepayAccounts:prepayAccounts,prepayLedger:prepayLedger,prepayTrash:prepayTrash,customTypes:customTypes,profile:profile,exportedAt:Date.now()};try{var ps=localStorage.getItem('ryeong_price_suite_v1');if(ps)out.priceSuite=JSON.parse(ps);}catch(e){}return out;}
 async function exportBackup(includeImages){
-  let objectUrl='';  try{
+  let objectUrl='';
+  try{
     const data=dataForExport();
     data.orders=(data.orders||[]).map(function(o){var n=Object.assign({},o);delete n.images;return n;});
     data.trash=(data.trash||[]).map(function(t){if(t&&t.order){var n=Object.assign({},t.order);delete n.images;t=Object.assign({},t,{order:n});}return t;});
@@ -7990,7 +8027,8 @@ function ensurePackageForType(t){if(!t)return null;var existing=cfg.packages.fin
 function syncPricePackagesFromTags(){if(typeof getAllTypes!=='function')return;var changed=false;var tags=getAllTypes();tags.forEach(function(t){var p=cfg.packages.find(function(z){return String(z.typeId||'')===String(t.id);})||cfg.packages.find(function(z){return !z.typeId&&String(z.name||'').trim()===String(t.name||'').trim();});if(!p){p=ensurePackageForType(t);changed=true;}if(p){if(String(p.typeId||'')!==String(t.id)){p.typeId=String(t.id);changed=true;}if(String(p.name||'')!==String(t.name||'')){p.name=String(t.name||'');changed=true;}if(p.method!=='perImage'){p.method='perImage';changed=true;}}});
 /* 套餐是标签价格的镜像，不再保留孤立/重复套餐；保留未关联记录以兼容旧快照，但界面只显示现有标签。 */
 var needs=(typeof customNeeds!=='undefined'?customNeeds.filter(function(n){return n&&n.active!==false;}):[{id:'urgent',name:'加急'},{id:'base',name:'加底'}]);needs.forEach(function(n){var it=cfg.items.find(function(x){return x.needId===n.id||(Array.isArray(x.needs)&&x.needs.indexOf(n.id)>-1)||String(x.name||'').trim()===n.name;});if(!it){it={id:'need_'+n.id,name:n.name,price:0,active:true,method:'perOrder',needs:[n.id],needId:n.id};cfg.items.push(it);changed=true;}else{if(it.name!==n.name){it.name=n.name;changed=true;}if(!Array.isArray(it.needs)||it.needs.length!==1||it.needs[0]!==n.id){it.needs=[n.id];changed=true;}if(it.needId!==n.id){it.needId=n.id;changed=true;}}});if(changed)write();}
-window.syncPricePackageForType=function(t){if(!t)return;var existing=cfg.packages.find(function(p){return String(p.typeId||'')===String(t.id);});if(!existing){ensurePackageForType(t);write();}if(typeof window.renderPriceSuitePage==='function'&&document.getElementById('priceSuiteBody'))window.renderPriceSuitePage();};window.renderPriceSuitePage=function(){syncPricePackagesFromTags();renderSuite();};
+window.syncPricePackageForType=function(t){if(!t)return;var existing=cfg.packages.find(function(p){return String(p.typeId||'')===String(t.id);});if(!existing){ensurePackageForType(t);write();}if(typeof window.renderPriceSuitePage==='function'&&document.getElementById('priceSuiteBody'))window.renderPriceSuitePage();};
+window.renderPriceSuitePage=function(){syncPricePackagesFromTags();renderSuite();};
 window.openPriceSuite=function(){if(typeof switchView==='function')switchView('priceSuite');else renderSuite();};
 window.closePriceSuite=function(){if(typeof switchView==='function')switchView('workspace');};
 function section(title,html){return '<section class="price-suite-section"><h3>'+title+'</h3>'+html+'</section>';}
@@ -8134,9 +8172,9 @@ window.openClientReceipt=function(clientId){window.openReceipt('client');activeR
 window.setReceiptClient=function(v){activeReceipt.client=String(v||'').trim();renderReceipt();};
 window.saveReceiptBrand=function(v){var t=String(v==null?'':v).trim();if(!t)t='DIY';receiptBrand={title:t,subtitle:'',blessing:'May fortune find you, today and always.'};try{localStorage.setItem('ryeong_receipt_brand_v1',JSON.stringify(receiptBrand));}catch(e){}};
 window.closeReceipt=function(){var m=document.getElementById('receiptModal');if(m)m.classList.remove('show');if(!document.querySelector('.modal.show'))document.body.classList.remove('lock');};
-function receiptItemDetails(o){var s=o.pricingSnapshot;if(!s)return '';var out='';var charges=Array.isArray(s.charges)?s.charges:null;if(charges){charges.forEach(function(x){var label=x.kind==='package'?'基础价格：':'额外需求：';out+='<div class="rc-row"><span>'+label+esc(x.name||'未命名')+(x.method==='perImage'?'（按张）':'（按单）')+'</span><span>'+money(Number(x.amount)||0)+'</span></div>';});}else{if(s.packageName)out+='<div class="rc-row"><span>基础价格：'+esc(s.packageName)+'</span><span>'+money((Number(s.packagePrice)||0)*(s.packageMethod==='perOrder'?1:(Number(s.quantity)||1)))+'</span></div>';(s.items||[]).forEach(function(x){var amt=Number(x.amount);if(!Number.isFinite(amt))amt=(Number(x.unitPrice)||0)*(Number(x.qty)||1);out+='<div class="rc-row"><span>额外需求：'+esc(x.name||'未命名')+'</span><span>'+money(amt)+'</span></div>';});}if(s.manual)out+='<div class="rc-small">订单金额已手动调整</div>';return out;}
+function receiptItemDetails(o){var s=o.pricingSnapshot;if(!s)return '';if(s.manual)return '<div class="rc-small">订单金额已手动调整</div>';var out='';var charges=Array.isArray(s.charges)?s.charges:null;if(charges){charges.forEach(function(x){var label=x.kind==='package'?'基础价格：':'额外需求：';out+='<div class="rc-row"><span>'+label+esc(x.name||'未命名')+(x.method==='perImage'?'（按张）':'（按单）')+'</span><span>'+money(Number(x.amount)||0)+'</span></div>';});}else{if(s.packageName)out+='<div class="rc-row"><span>基础价格：'+esc(s.packageName)+'</span><span>'+money((Number(s.packagePrice)||0)*(s.packageMethod==='perOrder'?1:(Number(s.quantity)||1)))+'</span></div>';(s.items||[]).forEach(function(x){var amt=Number(x.amount);if(!Number.isFinite(amt))amt=(Number(x.unitPrice)||0)*(Number(x.qty)||1);out+='<div class="rc-row"><span>额外需求：'+esc(x.name||'未命名')+'</span><span>'+money(amt)+'</span></div>';});}if(s.manual)out+='<div class="rc-small">订单金额已手动调整</div>';return out;}
 function receiptOrderNumber(o){var id=String(o&&o.id||'');if(/^\d{8}-\d{3,}$/.test(id))return id;var d=String(o&&o.orderDate||'').replace(/-/g,'').slice(0,8);if(!/^\d{8}$/.test(d))return '旧订单';var same=allOrders().filter(function(x){return String(x.orderDate||'')===String(o.orderDate||'');}).sort(function(a,b){return (Number(a.createdAt)||0)-(Number(b.createdAt)||0)||String(a.id||'').localeCompare(String(b.id||''));});var reserved={};same.forEach(function(x){var xid=String(x.id||'');if(/^\d{8}-\d{3,}$/.test(xid)&&xid.slice(0,8)===d)reserved[Number(xid.slice(9))]=true;});var seq=1;for(var i=0;i<same.length;i++){var x=same[i],xid=String(x.id||'');if(/^\d{8}-\d{3,}$/.test(xid)&&xid.slice(0,8)===d)continue;while(reserved[seq])seq++;if(x===o||String(x.id)===String(o.id))return d+'-'+String(seq).padStart(3,'0');seq++;}return d+'-001';}
-function receiptOrderBlock(o,includeClient){var q=parseInt(o.quantity,10)||1,amt=(Number(o.price)||0)*q,pre=Math.min(amt,Math.max(0,Number(o.prepaidAmount)||0)),explicitDirect=Number(o.directPaymentAmount)>0?Number(o.directPaymentAmount):(Number(o.otherPaymentAmount)>0?Number(o.otherPaymentAmount):0),hasPaymentData=true,other=Math.max(0,amt-pre);if(explicitDirect>0)other=Math.min(amt-pre,explicitDirect);var tags=(o.typeNames||[]).filter(Boolean).join('、')||'—',needLabel=(Array.isArray(o.needNames)?o.needNames.slice():[]);if(o.status==='加急'&&needLabel.indexOf('加急')<0&&needLabel.indexOf('次日加急')<0)needLabel.push('次日加急');needLabel=needLabel.map(function(n){return n==='加急'?'次日加急':n;});var date=dateKey(o)||'—';var out='<div class="rc-item"><div class="rc-row rc-date-total"><b>'+esc(date.replace(/-/g,'/'))+'</b><b>'+money(amt)+'</b></div><div class="rc-order-no">订单：'+esc(receiptOrderNumber(o))+'</div>';if(includeClient)out+='<div>单主：'+esc(o.clientId||'—')+'</div>';out+='<div>标签：'+esc(tags)+(needLabel.length?'　需求：'+esc(needLabel.join('、')):'')+'　数量：'+q+'</div>'+receiptItemDetails(o);if(pre>0.000001)out+='<div class="rc-row"><span>预存抵扣</span><span>'+money(pre)+'</span></div>';if(other>0.000001)out+='<div class="rc-row"><span>直接支付'+(o.paymentMethod?'（'+esc(o.paymentMethod)+'）':'')+'</span><span>'+money(other)+'</span></div>';out+='</div><div class="rc-line"></div>';return {html:out,amount:amt,quantity:q,prepaid:pre,other:other,hasPrepaid:pre>0.000001,hasDirect:other>0.000001};}
+function receiptOrderBlock(o,includeClient){var q=parseInt(o.quantity,10)||1,amt=(typeof window.getOrderTotalAmount==='function'?window.getOrderTotalAmount(o):(Number(o.price)||0)*q),pre=Math.min(amt,Math.max(0,Number(o.prepaidAmount)||0)),explicitDirect=Number(o.directPaymentAmount)>0?Number(o.directPaymentAmount):(Number(o.otherPaymentAmount)>0?Number(o.otherPaymentAmount):0),hasPaymentData=true,other=Math.max(0,amt-pre);if(explicitDirect>0)other=Math.min(amt-pre,explicitDirect);var tags=(o.typeNames||[]).filter(Boolean).join('、')||'—',needLabel=(Array.isArray(o.needNames)?o.needNames.slice():[]);if(o.status==='加急'&&needLabel.indexOf('加急')<0&&needLabel.indexOf('次日加急')<0)needLabel.push('次日加急');needLabel=needLabel.map(function(n){return n==='加急'?'次日加急':n;});var date=dateKey(o)||'—';var out='<div class="rc-item"><div class="rc-row rc-date-total"><b>'+esc(date.replace(/-/g,'/'))+'</b><b>'+money(amt)+'</b></div><div class="rc-order-no">订单：'+esc(receiptOrderNumber(o))+'</div>';if(includeClient)out+='<div>单主：'+esc(o.clientId||'—')+'</div>';out+='<div>标签：'+esc(tags)+(needLabel.length?'　需求：'+esc(needLabel.join('、')):'')+'　数量：'+q+'</div>'+receiptItemDetails(o);if(pre>0.000001)out+='<div class="rc-row"><span>预存抵扣</span><span>'+money(pre)+'</span></div>';if(other>0.000001)out+='<div class="rc-row"><span>直接支付'+(o.paymentMethod?'（'+esc(o.paymentMethod)+'）':'')+'</span><span>'+money(other)+'</span></div>';out+='</div><div class="rc-line"></div>';return {html:out,amount:amt,quantity:q,prepaid:pre,other:other,hasPrepaid:pre>0.000001,hasDirect:other>0.000001};}
 window.renderReceipt=function(){var period=document.getElementById('receiptPeriod');if(period)activeReceipt.key=period.value||activeReceipt.key;var os=allOrders().slice();if(activeReceipt.kind==='month')os=os.filter(function(o){return getMonth(o)===activeReceipt.key;});if(activeReceipt.kind==='year')os=os.filter(function(o){return dateKey(o).slice(0,4)===activeReceipt.key;});if(activeReceipt.kind==='client'){var ci=(document.getElementById('receiptClient')||{}).value||activeReceipt.client||'';activeReceipt.client=ci.trim();os=os.filter(function(o){return String(o.clientId||'')===activeReceipt.client;});var st=(document.getElementById('receiptStart')||{}).value||'',en=(document.getElementById('receiptEnd')||{}).value||'';if(st)os=os.filter(function(o){return dateKey(o)>=st;});if(en)os=os.filter(function(o){return dateKey(o)<=en;});}os.sort(function(a,b){return dateKey(a).localeCompare(dateKey(b))||(Number(a.createdAt)||0)-(Number(b.createdAt)||0)||String(a.id).localeCompare(String(b.id));});var paper=document.getElementById('receiptPaper');var yOrM=activeReceipt.kind==='year'?(String(activeReceipt.key||new Date().getFullYear())+'年收入'):activeReceipt.kind==='month'?(String(activeReceipt.key||'').slice(0,4)+'年'+String(activeReceipt.key||'').slice(5,7)+'月收入'):'单主消费';var title=esc(receiptBrand.title||'DIY');var out='<div class="rc-center rc-brand"><h3 contenteditable="true" role="textbox" aria-label="点击编辑小票大标题" spellcheck="false" oninput="saveReceiptBrand(this.textContent)" onblur="saveReceiptBrand(this.textContent)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="点击修改标题">'+title+'</h3><div class="rc-subtitle">'+esc(yOrM)+' · May fortune find you, today and always.</div></div><div class="rc-line"></div>';var total=0,qty=0,consumption=0,prepaid=0,otherPaid=0,hasPrepaid=false,hasDirect=false;
 if(activeReceipt.kind==='year'){var y=String(activeReceipt.key||new Date().getFullYear());for(var m=1;m<=12;m++){var k=y+'-'+String(m).padStart(2,'0');var sum=typeof getIncomeSummary==='function'?getIncomeSummary(k,true).total:0;total+=sum;out+='<div class="rc-item"><div class="rc-row"><b>'+esc(k.replace('-','年')+'月')+'</b><b>'+money(sum)+'</b></div><div class="rc-small">当月收入（含标记为不计入本月的预存收入）</div></div>'; }out+='<div class="rc-line"></div><div class="rc-row rc-total"><span>全年收入合计</span><b>'+money(total)+'</b></div>';}
 else if(activeReceipt.kind==='month'){var income=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).total:0;var orderIncome=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).orderIncome:0;var rechargeIncome=typeof getIncomeSummary==='function'?getIncomeSummary(activeReceipt.key,false).prepayIncome:0;out+='<div class="rc-row"><span>本月收入合计</span><b>'+money(income)+'</b></div><div class="rc-row"><span>订单收入</span><span>'+money(orderIncome||0)+'</span></div><div class="rc-row"><span>预存充值收入</span><span>'+money(rechargeIncome||Math.max(0,income-(orderIncome||0)))+'</span></div><div class="rc-line"></div><h4>订单明细</h4>';os.forEach(function(o){var r=receiptOrderBlock(o,true);qty+=r.quantity;consumption+=r.amount;prepaid+=r.prepaid;otherPaid+=r.other;hasPrepaid=hasPrepaid||r.hasPrepaid;hasDirect=hasDirect||r.hasDirect;out+=r.html;});out+='<div class="rc-row"><span>订单消费金额（非收入统计）</span><b>'+money(consumption)+'</b></div>';}
@@ -8306,7 +8344,449 @@ window.__receiptShareFromPreview=function(){
 #view-priceSuite .ps-linked-entry .ps-linked-name{white-space:normal!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.25!important;}
 #view-priceSuite .ps-linked-entry .ps-linked-name br{display:block;content:"";margin:0;}
 </style>
+
+<script id="v1656-total-amount-prepay-revoke-patch">
+(function(){
+'use strict';
+function num(v){var n=Number(v);return Number.isFinite(n)?n:0;}
+function qty(o){return Math.max(1,parseInt(o&&o.quantity,10)||1);}
+window.getOrderTotalAmount=function(o){
+  if(!o)return 0;
+  if(o.totalAmount!==undefined&&o.totalAmount!==null&&o.totalAmount!=='')return Math.max(0,num(o.totalAmount));
+  return Math.max(0,num(o.price)*qty(o));
+};
+/* 旧订单仍按 price × quantity 读取；新订单优先读取明确的总额字段。 */
+window.getOrderIncomeAmount=function(o){
+  if(!o)return 0;
+  var prepaid=num(o.prepaidAmount), total=window.getOrderTotalAmount(o);
+  if(prepaid>0){
+    var cid=o.prepayClientId||o.clientId||'',acc=cid&&typeof getPrepayAccount==='function'?getPrepayAccount(cid,false):null;
+    if(acc&&acc.countInIncome===false)return 0;
+    return Math.max(0,total-prepaid);
+  }
+  return total;
+};
+
+/* 订单表单价格框改为订单总额口径；底层旧 price 字段仍保存兼容单价。 */
+var originalOpen=window.openForm;
+if(typeof originalOpen==='function'){
+  window.openForm=function(id){
+    window.manualPriceTouched=false;window.pendingPricingSnapshot=null;
+    originalOpen(id);
+    var el=document.getElementById('price');
+    if(el&&id){var o=(orders||[]).find(function(x){return String(x.id)===String(id);});if(o)el.value=window.getOrderTotalAmount(o).toFixed(2).replace(/\.00$/,'');}
+    if(el&&!id)el.value='';
+    if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+  };
+}
+var originalSave=window.saveOrder;
+if(typeof originalSave==='function'){
+  window.saveOrder=function(){
+    var el=document.getElementById('price'),q=Math.max(1,parseInt(typeof selectedQuantity!=='undefined'?selectedQuantity:1,10)||1);
+    var entered=el?String(el.value||'').trim():'',total=Math.max(0,num(entered));
+    var snap=window.pendingPricingSnapshot, editId=(typeof editingOrderId!=='undefined'?editingOrderId:null), countBefore=(orders||[]).length;
+    /* 编辑历史订单时冻结原价格快照，避免当前价格表变动反向重算历史金额。 */
+    if(editId&&!snap){var oldForEdit=(orders||[]).find(function(o){return String(o.id)===String(editId);});if(oldForEdit&&oldForEdit.pricingSnapshot){window.pendingPricingSnapshot=JSON.parse(JSON.stringify(oldForEdit.pricingSnapshot));snap=window.pendingPricingSnapshot;}}
+    if(el)el.value=(total/q).toFixed(4).replace(/0+$/,'').replace(/\.$/,'');
+    try{originalSave();}
+    finally{
+      var modal=document.getElementById('orderModal');
+      if(modal&&modal.classList.contains('show')){
+        if(el)el.value=entered;
+        if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+      }else{
+        var target=editId?(orders||[]).find(function(o){return String(o.id)===String(editId);})||null:null;
+        if(!target&&Array.isArray(orders)&&orders.length>countBefore)target=orders[0]||null;
+        if(target){
+          target.totalAmount=Math.round(total*100)/100;
+          if(target.pricingSnapshot){
+            target.pricingSnapshot.calculatedTotal=target.totalAmount;
+            if(window.manualPriceTouched){target.pricingSnapshot.manual=true;target.pricingSnapshot.manualAmount=target.totalAmount;}
+          }
+        }
+        if(el)el.value=entered;
+        if(typeof saveData==='function')saveData();
+        if(typeof refreshAll==='function')refreshAll();
+      }
+    }
+  };
+}
+/* 预存预览统一直接读取总额，数量变化、标签/需求变化均实时刷新。 */
+window.updatePrepayPanel=function(){
+  var panel=document.getElementById('prepayBalancePanel'),text=document.getElementById('prepayBalanceText'),preview=document.getElementById('prepayPreview'),checkbox=document.getElementById('usePrepay'),clientInput=document.getElementById('clientId');
+  if(!panel||!text||!checkbox||!clientInput)return;
+  var client=clientInput.value.trim(),balance=typeof getPrepayBalance==='function'?getPrepayBalance(client):0;
+  var editing=typeof editingOrderId!=='undefined'&&editingOrderId?(orders||[]).find(function(x){return String(x.id)===String(editingOrderId);}):null;
+  var old=editing&&(editing.prepayClientId||editing.clientId)===client?num(editing.prepaidAmount):0,available=balance+old,total=Math.max(0,num((document.getElementById('price')||{}).value));
+  if(!client||available<=0){panel.classList.remove('show');checkbox.checked=false;if(preview)preview.textContent='';return;}
+  panel.classList.add('show');text.textContent='¥'+available.toFixed(2);
+  if(!editing&&!prepayToggleTouched)checkbox.checked=true;
+  var row=document.getElementById('prepayUseRow'),input=document.getElementById('prepayUseAmount');
+  if(row)row.style.display=checkbox.checked?'flex':'none';
+  if(input){
+    if(!prepayAmountTouched&&checkbox.checked)input.value=Math.min(total,available).toFixed(2);
+    var wanted=Math.max(0,num(input.value));if(wanted>total){wanted=total;input.value=total.toFixed(2);}
+    if(preview)preview.textContent=!total?'本单金额为 0':(wanted<=available+0.000001?'扣 ¥'+wanted.toFixed(2):'预存不足');
+  }else if(preview)preview.textContent=checkbox.checked?'预存不足':'不使用';
+};
+/* 自动计价：新订单选择标签/需求/数量后更新总额；历史订单不自动重算。 */
+function refreshAutoPrice(){
+  if(typeof editingOrderId!=='undefined'&&editingOrderId)return;
+  if(window.manualPriceTouched)return;
+  var el=document.getElementById('price');if(!el)return;
+  var tag=(typeof selectedTypeIds!=='undefined'&&selectedTypeIds&&selectedTypeIds.length)?selectedTypeIds[0]:'';
+  var needs=typeof getSelectedNeedIds==='function'?getSelectedNeedIds():[];
+  var packs=(typeof cfg!=='undefined'&&cfg.packages||[]).filter(function(p){return p.active!==false&&String(p.typeId||'')===String(tag||'');});
+  var pack=packs.length===1?packs[0]:(packs.find(function(p){return p.isDefault;})||null);
+  var items=(typeof cfg!=='undefined'&&cfg.items||[]).filter(function(x){return x.active!==false&&Array.isArray(x.needs)&&x.needs.some(function(n){return needs.indexOf(n)>=0;});});
+  if(packs.length>1&&!pack){window.pendingPricingSnapshot=null;return;}
+  if(!pack&&!items.length){el.value='';window.pendingPricingSnapshot=null;if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();return;}
+  var q=Math.max(1,parseInt(typeof selectedQuantity!=='undefined'?selectedQuantity:1,10)||1),total=0,charges=[];
+  if(pack){var a=num(pack.price)*q;total+=a;charges.push({id:pack.id,name:pack.name,unitPrice:num(pack.price),method:'perImage',qty:q,amount:a,kind:'package'});}
+  items.forEach(function(x){var m=(cfg.mode==='all'||x.method==='perImage')?'perImage':'perOrder',a=num(x.price)*(m==='perImage'?q:1);total+=a;charges.push({id:x.id,name:x.name,unitPrice:num(x.price),method:m,qty:m==='perImage'?q:1,amount:a,kind:'item'});});
+  el.value=total.toFixed(2).replace(/\.00$/,'');
+  window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?num(pack.price):0,packageMethod:'perImage',items:charges.filter(function(x){return x.kind==='item';}),charges:charges,quantity:q,calculatedTotal:total,manual:false,autoMatched:true,sourceTag:String(tag||''),sourceNeeds:needs.slice(),appliedAt:Date.now()};
+  if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+}
+var wheel=document.getElementById('wheelTrack'),quantitySettleTimer=null;
+function scheduleQuantityPriceRefresh(){
+  if(quantitySettleTimer)clearTimeout(quantitySettleTimer);
+  quantitySettleTimer=setTimeout(function(){
+    quantitySettleTimer=null;
+    refreshAutoPrice();
+  },260);
+}
+if(wheel){
+  wheel.addEventListener('scroll',scheduleQuantityPriceRefresh,{passive:true});
+  wheel.addEventListener('touchend',scheduleQuantityPriceRefresh,{passive:true});
+  wheel.addEventListener('pointerup',scheduleQuantityPriceRefresh,{passive:true});
+}
+document.addEventListener('change',function(e){
+  if(!e.target)return;
+  if(['quantity','orderQuantity'].indexOf(e.target.id)>=0||e.target.name==='quantity'||e.target.closest&&e.target.closest('#typePicker,#needPicker'))scheduleQuantityPriceRefresh();
+  if(e.target.id==='usePrepay'&&typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+});
+document.addEventListener('click',function(e){
+  if(!e.target)return;
+  if(e.target.closest&&e.target.closest('#typePicker,#needPicker'))setTimeout(refreshAutoPrice,0);
+});
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='price'){window.manualPriceTouched=true;if(window.pendingPricingSnapshot)window.pendingPricingSnapshot.manual=true;if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();}
+  if(e.target&&e.target.id==='prepayUseAmount'&&typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+});
+
+/* 只统计已保存订单的本月完整订单总额，不混入充值收入。 */
+function renderPureOrderAmount(){
+  var box=document.getElementById('statPureOrderAmount');if(!box)return;
+  var d=new Date(),key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  var sum=(orders||[]).filter(function(o){return String(o.orderDate||'').slice(0,7)===key;}).reduce(function(a,o){return a+window.getOrderTotalAmount(o);},0);
+  box.textContent=(typeof moneyText==='function'?moneyText('¥'+sum.toFixed(2),'income'):'¥'+sum.toFixed(2));
+}
+var rw=window.renderWorkspace;
+if(typeof rw==='function')window.renderWorkspace=function(){rw();renderPureOrderAmount();};
+var ri=window.renderIncome;
+if(typeof ri==='function')window.renderIncome=function(){ri();renderPureOrderAmount();};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderPureOrderAmount);else renderPureOrderAmount();
+
+/* 最新一笔充值撤销：若之后有任何同账户流水，保守禁止撤销，避免破坏已扣款或调整记录。 */
+window.canRevokeLatestRecharge=function(log){
+  if(!log||log.type!=='recharge')return false;
+  var same=(prepayLedger||[]).filter(function(x){return x&&x.clientId===log.clientId;});
+  var latest=same.filter(function(x){return x.type==='recharge';}).sort(function(a,b){return num(b.createdAt)-num(a.createdAt);})[0];
+  if(!latest||latest.id!==log.id)return false;
+  return !same.some(function(x){return x.id!==log.id&&num(x.createdAt)>num(log.createdAt);});
+};
+window.revokeLatestRecharge=async function(id){
+  var log=(prepayLedger||[]).find(function(x){return x&&x.id===id&&x.type==='recharge';});
+  if(!log){toast('找不到这笔充值');return;}
+  if(!window.canRevokeLatestRecharge(log)){toast('只能撤销最新一笔且从未发生后续余额变动的充值');return;}
+  var account=typeof getPrepayAccount==='function'?getPrepayAccount(log.clientId,false):null,amount=num(log.amount);
+  if(!account||amount<=0){toast('账户或充值金额异常，无法撤销');return;}
+  var ok=await uiConfirm('确定撤销「'+log.clientId+'」最新一笔 ¥'+amount.toFixed(2)+' 充值吗？\\n撤销后余额减少 ¥'+amount.toFixed(2)+'，并删除该充值记录，不新增流水。',{okText:'确认撤销'});
+  if(!ok)return;
+  if(!window.canRevokeLatestRecharge(log)){toast('账户流水已变化，请刷新后重试');return;}
+  if(num(account.balance)+0.000001<amount){toast('当前余额不足，无法安全撤销');return;}
+  account.balance=Math.round((num(account.balance)-amount)*100)/100;account.updatedAt=Date.now();
+  prepayLedger=prepayLedger.filter(function(x){return x.id!==id;});
+  saveData();renderPrepay();try{renderIncome();renderWorkspace();}catch(e){}
+  toast('最新充值已撤销，余额已恢复');
+};
+/* 更新版本标识。 */
+var version=document.querySelector('.settings-version');if(version)version.textContent='v1.6.61';
+})();
+</script>
+<style id="v1656-layout-patch">
+#statPureOrderAmount{font-size:18px!important;white-space:nowrap}
+#incBlock-pure-order{grid-column:1 / 3;grid-row:3;min-height:58px}
+.prepay-record-actions button{white-space:nowrap}
+</style>
+
+
+
+
 </body>
+
+<script id="v1657-unified-order-payment-patch">
+(function(){
+'use strict';
+function n(v){var x=Number(v);return Number.isFinite(x)?Math.max(0,x):0;}
+function q(){return Math.max(1,parseInt(typeof selectedQuantity!=='undefined'?selectedQuantity:1,10)||1);}
+function cents(v){return Math.round(n(v)*100)/100;}
+function currentClient(){var el=document.getElementById('clientId');return el?String(el.value||'').trim():'';}
+function currentOldOrder(){return (typeof editingOrderId!=='undefined'&&editingOrderId&&Array.isArray(orders))?orders.find(function(o){return String(o.id)===String(editingOrderId);}):null;}
+function availablePrepay(client){
+  if(!client||typeof getPrepayBalance!=='function')return 0;
+  var amount=n(getPrepayBalance(client)),old=currentOldOrder();
+  if(old&&(old.prepayClientId||old.clientId)===client)amount+=n(old.prepaidAmount);
+  return cents(amount);
+}
+function setMethodOptions(){
+  var el=document.getElementById('paymentMethod');if(!el)return;
+  var old=el.value;
+  el.innerHTML='<option value="">请选择</option><option value="微信">微信</option><option value="支付宝">支付宝</option><option value="QQ">QQ</option>';
+  if(['微信','支付宝','QQ'].indexOf(old)>=0)el.value=old;
+  else if(old==='微信支付')el.value='微信';
+  else if(old==='支付宝支付')el.value='支付宝';
+}
+setMethodOptions();
+var priorOpenForm=window.openForm;
+if(typeof priorOpenForm==='function')window.openForm=function(id){
+  priorOpenForm.apply(this,arguments);
+  var method=document.getElementById('paymentMethod'),old=id&&Array.isArray(orders)?orders.find(function(o){return String(o.id)===String(id);}):null;
+  if(method){var value=old?String(old.paymentMethod||''):'';if(value==='微信支付')value='微信';if(value==='支付宝支付')value='支付宝';method.value=['微信','支付宝','QQ'].indexOf(value)>=0?value:'';}
+  window.updatePrepayPanel();
+};
+
+/* 表单只展示预存余额与自动抵扣结果；抵扣开关、金额输入和内嵌支付方式不再由用户操作。 */
+window.updatePrepayPanel=function(){
+  var panel=document.getElementById('prepayBalancePanel'),text=document.getElementById('prepayBalanceText'),preview=document.getElementById('prepayPreview');
+  var checkbox=document.getElementById('usePrepay'),input=document.getElementById('prepayUseAmount'),row=document.getElementById('prepayUseRow'),method=document.getElementById('paymentMethod');
+  if(!panel||!checkbox)return;
+  var client=currentClient(),balance=availablePrepay(client),total=cents((document.getElementById('price')||{}).value);
+  if(!client||balance<=0)checkbox.checked=false;
+  var usePrepay=!!checkbox.checked,deduct=usePrepay?cents(Math.min(total,balance)):0,direct=cents(Math.max(0,total-deduct));
+  if(input)input.value=deduct.toFixed(2);
+  if(row)row.style.display='none';
+  var label=checkbox.closest?checkbox.closest('.prepay-toggle'):null;
+  if(label){label.style.display='flex';checkbox.style.display='inline-grid';label.style.cursor='pointer';label.classList.toggle('is-checked',checkbox.checked);}
+  if(client&&balance>0){
+    panel.classList.add('show');if(text)text.textContent='¥'+balance.toFixed(2);
+    if(preview)preview.textContent=usePrepay
+      ? (total>0?'自动抵扣 ¥'+deduct.toFixed(2)+(direct>0?'，还需支付 ¥'+direct.toFixed(2):'，本单已全额抵扣'):'填写订单金额后自动抵扣')
+      : (total>0?'未使用预存，需直接支付 ¥'+total.toFixed(2):'可用预存 ¥'+balance.toFixed(2));
+  }else{panel.classList.remove('show');if(preview)preview.textContent='';}
+  var methodRow=method&&method.parentElement;if(methodRow)methodRow.style.display='none';
+  if(method&&direct<=0)method.value='';
+};
+
+/* 自动计价统一为（类型价格 + 已选需求价格）× 数量。 */
+function recalcAutoPrice(){
+  var el=document.getElementById('price');if(!el)return;
+  var tag=(typeof selectedTypeIds!=='undefined'&&selectedTypeIds&&selectedTypeIds.length)?selectedTypeIds[0]:'';
+  var needs=typeof getSelectedNeedIds==='function'?getSelectedNeedIds():[];
+  var packages=(typeof cfg!=='undefined'&&cfg&&Array.isArray(cfg.packages)?cfg.packages:[]).filter(function(x){return x&&x.active!==false&&String(x.typeId||'')===String(tag||'');});
+  var pack=packages.length===1?packages[0]:(packages.find(function(x){return x.isDefault;})||null);
+  if(packages.length>1&&!pack){window.pendingPricingSnapshot=null;el.value='';window.updatePrepayPanel();return;}
+  var items=(typeof cfg!=='undefined'&&cfg&&Array.isArray(cfg.items)?cfg.items:[]).filter(function(x){return x&&x.active!==false&&Array.isArray(x.needs)&&x.needs.some(function(id){return needs.indexOf(id)>=0;});});
+  var quantity=q(),unitBase=pack?n(pack.price):0,unitNeeds=items.reduce(function(sum,x){return sum+n(x.price);},0),total=cents((unitBase+unitNeeds)*quantity);
+  if(!pack&&!items.length){el.value='';window.pendingPricingSnapshot=null;window.updatePrepayPanel();return;}
+  el.value=total.toFixed(2).replace(/\.00$/,'');
+  var charges=[];
+  if(pack)charges.push({id:pack.id,name:pack.name,unitPrice:n(pack.price),method:'perImage',qty:quantity,amount:cents(n(pack.price)*quantity),kind:'package'});
+  items.forEach(function(x){charges.push({id:x.id,name:x.name,unitPrice:n(x.price),method:'perImage',qty:quantity,amount:cents(n(x.price)*quantity),kind:'item'});});
+  window.pendingPricingSnapshot={mode:'rules',packageId:pack?pack.id:'',packageName:pack?pack.name:'',packagePrice:pack?n(pack.price):0,packageMethod:'perImage',items:charges.filter(function(x){return x.kind==='item';}),charges:charges,quantity:quantity,calculatedTotal:total,manual:false,autoMatched:true,sourceTag:String(tag||''),sourceNeeds:needs.slice(),appliedAt:Date.now()};
+  window.manualPriceTouched=false;
+  window.updatePrepayPanel();
+  if(typeof markOrderFormDirty==='function')markOrderFormDirty();
+}
+window.recalculateOrderTotal=recalcAutoPrice;
+var quantityTimer=null,suppressQuantityRecalc=false;
+function scheduleQuantityRecalc(){if(suppressQuantityRecalc)return;if(quantityTimer)clearTimeout(quantityTimer);quantityTimer=setTimeout(function(){quantityTimer=null;window.manualPriceTouched=false;recalcAutoPrice();},280);}
+var originalSetWheel=window.setWheelValue;if(typeof originalSetWheel==='function')window.setWheelValue=function(v){suppressQuantityRecalc=true;try{return originalSetWheel(v);}finally{setTimeout(function(){suppressQuantityRecalc=false;},180);}};
+var wheel=document.getElementById('wheelTrack');
+if(wheel){wheel.addEventListener('scroll',scheduleQuantityRecalc,{passive:true});wheel.addEventListener('touchend',scheduleQuantityRecalc,{passive:true});wheel.addEventListener('pointerup',scheduleQuantityRecalc,{passive:true});}
+document.addEventListener('click',function(ev){
+  var target=ev.target;if(!target||!target.closest)return;
+  if(target.closest('#typePicker,#needPicker')){window.manualPriceTouched=false;setTimeout(recalcAutoPrice,0);}
+});
+document.addEventListener('input',function(ev){
+  if(!ev.target)return;
+  if(ev.target.id==='price'){window.manualPriceTouched=true;if(window.pendingPricingSnapshot)window.pendingPricingSnapshot.manual=true;window.updatePrepayPanel();}
+});
+var oldClear=window.clearPrice;
+if(typeof oldClear==='function')window.clearPrice=function(){oldClear();window.manualPriceTouched=true;if(window.pendingPricingSnapshot)window.pendingPricingSnapshot.manual=true;window.updatePrepayPanel();};
+
+/* 部分预存/无预存时，在保存前弹出直接支付方式；足额预存则直接保存，不弹窗。 */
+var paymentConfirmed=false,paymentModal=null,paymentChoice='';
+function ensurePaymentModal(){
+  if(paymentModal)return paymentModal;
+  paymentModal=document.createElement('div');paymentModal.className='modal center';paymentModal.id='v1657DirectPaymentModal';
+  paymentModal.innerHTML='<div class="modal-content" style="max-width:360px"><div class="modal-header"><h2>确认直接支付</h2><button type="button" class="modal-close" data-close>×</button></div><div id="v1657PaymentSummary" style="font-size:14px;line-height:1.9;margin:8px 0 14px"></div><div style="font-size:13px;margin-bottom:9px">选择支付方式</div><div id="v1657PaymentChoices" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><button type="button" data-method="微信" class="btn-cancel">微信</button><button type="button" data-method="支付宝" class="btn-cancel">支付宝</button><button type="button" data-method="QQ" class="btn-cancel">QQ</button></div><div class="modal-actions"><button type="button" class="btn-cancel" data-cancel>返回修改</button><button type="button" class="btn-save" data-confirm>确认并保存</button></div></div>';
+  document.body.appendChild(paymentModal);
+  paymentModal.querySelectorAll('[data-method]').forEach(function(btn){btn.addEventListener('click',function(){paymentChoice=btn.getAttribute('data-method');paymentModal.querySelectorAll('[data-method]').forEach(function(b){b.style.opacity=b===btn?'1':'.55';b.style.borderColor=b===btn?'var(--pink-500)':'var(--card-border)';});});});
+  function close(){paymentModal.classList.remove('show');if(!document.querySelector('.modal.show'))document.body.classList.remove('lock');}
+  paymentModal.querySelector('[data-close]').addEventListener('click',close);
+  paymentModal.querySelector('[data-cancel]').addEventListener('click',close);
+  paymentModal.querySelector('[data-confirm]').addEventListener('click',function(){
+    if(!paymentChoice){if(typeof toast==='function')toast('请选择微信、支付宝或 QQ');return;}
+    var method=document.getElementById('paymentMethod');if(method)method.value=paymentChoice;
+    close();paymentConfirmed=true;
+    try{window.saveOrder();}finally{paymentConfirmed=false;}
+  });
+  return paymentModal;
+}
+var previousSave=window.saveOrder;
+window.saveOrder=function(){
+  if(paymentConfirmed)return previousSave.apply(this,arguments);
+  var client=currentClient();
+  if(!client)return previousSave.apply(this,arguments);
+  var el=document.getElementById('price'),total=cents(el?el.value:0),balance=availablePrepay(client),checkbox=document.getElementById('usePrepay');
+  var deduct=checkbox&&checkbox.checked?cents(Math.min(total,balance)):0,direct=cents(Math.max(0,total-deduct));
+  if(total<=0){if(typeof toast==='function')toast('订单总额不能为 0，请检查类型、需求和价格设置');return;}
+  var input=document.getElementById('prepayUseAmount'),method=document.getElementById('paymentMethod');
+  if(input)input.value=deduct.toFixed(2);
+  if(direct>0){
+    paymentChoice='';
+    var oldMethod=method?method.value:'';
+    if(['微信','支付宝','QQ'].indexOf(oldMethod)>=0)paymentChoice=oldMethod;
+    var modal=ensurePaymentModal(),summary=modal.querySelector('#v1657PaymentSummary');
+    summary.innerHTML='<div style="display:flex;justify-content:space-between"><span>订单总额</span><b>¥'+total.toFixed(2)+'</b></div><div style="display:flex;justify-content:space-between"><span>预存抵扣</span><b>−¥'+deduct.toFixed(2)+'</b></div><div style="display:flex;justify-content:space-between;border-top:1px solid var(--card-border);padding-top:8px;margin-top:5px;font-size:16px"><b>还需支付</b><b style="color:var(--pink-600)">¥'+direct.toFixed(2)+'</b></div>';
+    modal.querySelectorAll('[data-method]').forEach(function(btn){var on=btn.getAttribute('data-method')===paymentChoice;btn.style.opacity=on?'1':'.55';btn.style.borderColor=on?'var(--pink-500)':'var(--card-border)';});
+    modal.classList.add('show');document.body.classList.add('lock');return;
+  }
+  if(method)method.value='';
+  paymentConfirmed=true;
+  try{return previousSave.apply(this,arguments);}finally{paymentConfirmed=false;}
+};
+
+/* 隐藏旧的内嵌支付选项与手动抵扣入口，避免和弹窗产生两套支付流程。 */
+var style=document.createElement('style');style.textContent='#prepayUseRow{display:none!important}#paymentMethod{display:none!important}#prepayBalancePanel .prepay-toggle input{display:inline-grid!important;accent-color:var(--pink-600)}#prepayBalancePanel .prepay-toggle{cursor:pointer!important;pointer-events:auto!important}';document.head.appendChild(style);
+var version=document.querySelector('.settings-version');if(version)version.textContent='v1.6.61';
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setMethodOptions();window.updatePrepayPanel();});
+else{setMethodOptions();window.updatePrepayPanel();}
+})();
+</script>
+
+
+
+<script id="v1658-fix-quantity-total-and-auto-calc">
+(function(){
+'use strict';
+var priceEl=function(){return document.getElementById('price');};
+var timer=null, wheelSettleTimer=null;
+var originalPreviewOrderPrice=window.previewOrderPrice;
+function quantity(){return Math.max(1,parseInt(typeof selectedQuantity!=='undefined'?selectedQuantity:1,10)||1);}
+function needs(){return typeof getSelectedNeedIds==='function'?getSelectedNeedIds():[];}
+function tag(){return (typeof selectedTypeIds!=='undefined'&&Array.isArray(selectedTypeIds)&&selectedTypeIds.length)?String(selectedTypeIds[0]):'';}
+function updatePanel(){if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();}
+function applySnapshotTotal(beforeSnapshot){
+  var snap=window.pendingPricingSnapshot,el=priceEl();
+  if(!el||!snap||!Number.isFinite(Number(snap.calculatedTotal)))return false;
+  if(beforeSnapshot && snap===beforeSnapshot)return false;
+  if(String(snap.sourceTag||'')!==tag())return false;
+  if(Number(snap.quantity||0)!==quantity())return false;
+  el.value=(Math.round(Number(snap.calculatedTotal)*100)/100).toFixed(2).replace(/\.00$/,'');
+  window.manualPriceTouched=false;
+  if(snap.manual!==true)snap.manual=false;
+  updatePanel();
+  if(typeof markOrderFormDirty==='function')markOrderFormDirty();
+  return true;
+}
+function recalcFromPriceSuite(showToast){
+  if(typeof editingOrderId!=='undefined'&&editingOrderId)return false;
+  var el=priceEl();if(!el)return false;
+  var fn=originalPreviewOrderPrice;
+  if(typeof fn!=='function')return false;
+  var before=window.pendingPricingSnapshot||null;
+  var previousAmount=el.value;
+  window.manualPriceTouched=false;
+  if(window.pendingPricingSnapshot)window.pendingPricingSnapshot.manual=false;
+  fn(tag(),needs(),quantity());
+  var ok=applySnapshotTotal(before);
+  if(!ok){
+    /* 无匹配价格规则时，不让旧脚本把已输入金额清成 0。 */
+    el.value=previousAmount;
+    window.manualPriceTouched=false;
+    updatePanel();
+    if(showToast&&typeof toast==='function')toast('当前类型或需求尚未设置价格');
+  }
+  return ok;
+}
+var oldAuto=window.autoCalculateCurrentPrice;
+window.autoCalculateCurrentPrice=function(){
+  if(typeof editingOrderId!=='undefined'&&editingOrderId){if(typeof toast==='function')toast('历史订单不会自动套用当前价格表');return;}
+  var before=window.pendingPricingSnapshot||null;
+  window.manualPriceTouched=false;
+  if(typeof oldAuto==='function')oldAuto();
+  var snap=window.pendingPricingSnapshot,el=priceEl();
+  if(el&&snap&&snap!==before&&Number.isFinite(Number(snap.calculatedTotal))){
+    el.value=(Math.round(Number(snap.calculatedTotal)*100)/100).toFixed(2).replace(/\.00$/,'');
+    window.manualPriceTouched=false;
+    updatePanel();
+  }
+};
+window.recalculateOrderTotal=function(){return recalcFromPriceSuite(true);};
+window.previewOrderPrice=function(){return recalcFromPriceSuite(false);};
+
+/* 数量滚轮替换节点，移除 v1.6.56/1.6.57 叠加的旧 scroll 监听，
+   保留原有滚轮外观与子项，重新绑定唯一的数量同步流程。 */
+var oldWheel=document.getElementById('wheelTrack');
+if(oldWheel&&oldWheel.parentNode){
+  var wheel=oldWheel.cloneNode(true);
+  oldWheel.parentNode.replaceChild(wheel,oldWheel);
+  function readWheel(){
+    var min=typeof QUANTITY_MIN!=='undefined'?QUANTITY_MIN:1;
+    var max=typeof QUANTITY_MAX!=='undefined'?QUANTITY_MAX:20;
+    var h=typeof WHEEL_ITEM_HEIGHT!=='undefined'?WHEEL_ITEM_HEIGHT:20;
+    var v=Math.max(min,Math.min(max,Math.round(wheel.scrollTop/h)+min));
+    selectedQuantity=v;
+    if(typeof updateWheelActive==='function')updateWheelActive(v);
+    updatePanel();
+  }
+  wheel.addEventListener('scroll',function(){
+    if(wheelSettleTimer)clearTimeout(wheelSettleTimer);
+    wheelSettleTimer=setTimeout(function(){
+      wheelSettleTimer=null;
+      readWheel();
+      if(timer)clearTimeout(timer);
+      timer=setTimeout(function(){timer=null;recalcFromPriceSuite(false);},180);
+    },75);
+  },{passive:true});
+  ['touchend','pointerup','mouseup'].forEach(function(evt){wheel.addEventListener(evt,function(){
+    if(timer)clearTimeout(timer);
+    timer=setTimeout(function(){timer=null;readWheel();recalcFromPriceSuite(false);},220);
+  },{passive:true});});
+}
+var oldSetWheel=window.setWheelValue;
+if(typeof oldSetWheel==='function')window.setWheelValue=function(v){var result=oldSetWheel.apply(this,arguments);if(timer)clearTimeout(timer);timer=setTimeout(function(){timer=null;recalcFromPriceSuite(false);},260);return result;};
+
+/* 类型/需求选择后使用价格表原生预览接口，数量变化后按总额写回金额框。 */
+document.addEventListener('click',function(ev){
+  var t=ev.target;if(!t||!t.closest)return;
+  if(t.closest('#typePicker,#needPicker')){
+    if(typeof editingOrderId!=='undefined'&&editingOrderId)return;
+    window.manualPriceTouched=false;
+    setTimeout(function(){recalcFromPriceSuite(false);},40);
+  }
+});
+
+/* 金额框旁恢复独立的「自动计算」按钮。 */
+function ensureAutoButton(){
+  var chips=document.querySelector('#orderModal .price-chips');
+  if(!chips||document.getElementById('autoCalculateOrderAmount'))return;
+  var btn=document.createElement('button');
+  btn.type='button';btn.id='autoCalculateOrderAmount';btn.className='price-chip';btn.textContent='自动计算';
+  btn.style.border='0';btn.style.cursor='pointer';btn.addEventListener('click',function(){window.autoCalculateCurrentPrice();});
+  chips.appendChild(btn);
+}
+ensureAutoButton();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureAutoButton);
+
+/* 版本号 */
+var version=document.querySelector('.settings-version');if(version)version.textContent='v1.6.61';
+})();
+</script>
+
 </html>
 
 <style id="v166-theme-consistency-fixes">
@@ -8315,3 +8795,354 @@ html .prepay-status-refunded{background:var(--pink-100)!important;color:var(--pi
 html #prepayList .prepay-account-actions button.refund{background:var(--pink-600)!important;color:#fff!important;border-color:var(--pink-600)!important}
 html .stat-line.peak .sl-bar{background:linear-gradient(90deg,var(--pink-300),var(--pink-600))!important}
 </style>
+
+
+<script id="v1656-prepay-corrective-patch">
+(function(){
+  function moneyNum(v){var n=Number(v);return Number.isFinite(n)?Math.max(0,n):0;}
+  /* 预存抵扣按可用余额自动封顶；仅在确有直接支付余额时显示支付方式。 */
+  window.updatePrepayPanel=function(){
+    var panel=document.getElementById('prepayBalancePanel'),text=document.getElementById('prepayBalanceText'),preview=document.getElementById('prepayPreview'),checkbox=document.getElementById('usePrepay'),clientInput=document.getElementById('clientId'),input=document.getElementById('prepayUseAmount'),useRow=document.getElementById('prepayUseRow'),method=document.getElementById('paymentMethod');
+    if(!panel||!text||!checkbox||!clientInput)return;
+    var client=clientInput.value.trim(),balance=client&&typeof getPrepayBalance==='function'?moneyNum(getPrepayBalance(client)):0;
+    var editing=(typeof editingOrderId!=='undefined'&&editingOrderId)?(orders||[]).find(function(o){return String(o.id)===String(editingOrderId);}):null;
+    var old=editing&&(editing.prepayClientId||editing.clientId)===client?moneyNum(editing.prepaidAmount):0;
+    var available=Math.round((balance+old)*100)/100,total=Math.round(moneyNum((document.getElementById('price')||{}).value)*100)/100;
+    if(!client||available<=0){panel.classList.remove('show');checkbox.checked=false;if(preview)preview.textContent='';if(useRow)useRow.style.display='none';var mr=method&&method.parentElement;if(mr)mr.style.display=total>0?'flex':'none';return;}
+    panel.classList.add('show');text.textContent='¥'+available.toFixed(2);
+    if(!editing&&!prepayToggleTouched)checkbox.checked=true;
+    if(useRow)useRow.style.display=checkbox.checked?'flex':'none';
+    var wanted=0;
+    if(checkbox.checked){
+      if(input){
+        if(!prepayAmountTouched)input.value=Math.min(total,available).toFixed(2);
+        wanted=Math.min(total,available,moneyNum(input.value));
+        if(moneyNum(input.value)>wanted+0.000001)input.value=wanted.toFixed(2);
+      }else wanted=Math.min(total,available);
+    }
+    wanted=Math.round(wanted*100)/100;
+    var direct=Math.max(0,Math.round((total-wanted)*100)/100);
+    if(preview)preview.textContent=!total?'本单金额为 0':(checkbox.checked?'预存抵扣 ¥'+wanted.toFixed(2)+(direct>0?'，还需直接支付 ¥'+direct.toFixed(2):'，无需直接支付'):'本单直接支付 ¥'+total.toFixed(2));
+    var methodRow=method&&method.parentElement;if(methodRow)methodRow.style.display=direct>0.000001?'flex':'none';
+    if(direct<=0.000001&&method)method.value='';
+  };
+  /* 充值只能撤销账户最新一条流水；任何后续扣款、退款、调整或再次充值均禁止。 */
+  window.canRevokeLatestRecharge=function(log){
+    if(!log||log.type!=='recharge'||!Array.isArray(prepayLedger))return false;
+    var same=prepayLedger.filter(function(x){return x&&String(x.clientId)===String(log.clientId);});
+    return same.length>0&&same[0].id===log.id&&same[0].type==='recharge';
+  };
+  window.revokeLatestRecharge=async function(id){
+    var log=(prepayLedger||[]).find(function(x){return x&&x.id===id&&x.type==='recharge';});
+    if(!log){toast('找不到这笔充值');return;}
+    if(!window.canRevokeLatestRecharge(log)){toast('这笔充值不是账户最新流水，或充值后已有余额变动，不能撤销');return;}
+    var account=typeof getPrepayAccount==='function'?getPrepayAccount(log.clientId,false):null;
+    var amount=moneyNum(log.amount);
+    if(!account||amount<=0){toast('账户或充值金额异常，无法撤销');return;}
+    var ok=await uiConfirm('确定撤销「'+log.clientId+'」最新一笔 ¥'+amount.toFixed(2)+' 充值吗？\n仅在充值从未使用、之后没有任何余额变动时允许撤销。确认后会扣回余额并删除该充值记录，不新增流水。',{okText:'确认撤销',cancelText:'取消'});
+    if(!ok)return;
+    if(!window.canRevokeLatestRecharge(log)){toast('账户流水已变化，请刷新后重试');return;}
+    if(moneyNum(account.balance)+0.000001<amount){toast('当前余额不足，无法安全撤销');return;}
+    account.balance=Math.round((moneyNum(account.balance)-amount)*100)/100;
+    account.updatedAt=Date.now();
+    prepayLedger=prepayLedger.filter(function(x){return x.id!==id;});
+    saveData();
+    if(typeof renderPrepay==='function')renderPrepay();
+    if(typeof renderIncome==='function')renderIncome();
+    if(typeof renderWorkspace==='function')renderWorkspace();
+    toast('最新充值已撤销，余额已恢复');
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();
+    if(typeof refreshAll==='function')refreshAll();
+    if(typeof renderPureOrderAmount==='function')renderPureOrderAmount();
+  });
+  if(document.readyState!=='loading'){
+    window.updatePrepayPanel();
+    if(typeof refreshAll==='function')refreshAll();
+    if(typeof renderPureOrderAmount==='function')renderPureOrderAmount();
+  }
+})();
+</script>
+
+
+<style id="v1660-daily-goal-and-payment-ui">
+/* v1.6.60：工作台每日目标 / 今日日程 */
+#todayOverview{position:relative;display:block!important;text-align:left!important;padding:13px 15px!important;min-height:76px;cursor:pointer;}
+#todayOverview .to-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
+#todayOverview .to-title{font-size:12px;font-weight:800;letter-spacing:.2px;color:var(--pink-700);}
+#todayOverview .to-actions{display:flex;align-items:center;gap:6px;}
+#todayOverview .to-action{border:1px solid var(--pink-200);background:var(--card-bg);color:var(--pink-700);border-radius:999px;padding:4px 9px;font-size:11px;font-weight:700;line-height:1.35;}
+#todayOverview .to-main{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;}
+#todayOverview .to-current{font-size:24px;font-weight:850;color:var(--pink-600);line-height:1.1;font-variant-numeric:tabular-nums;}
+#todayOverview .to-total{font-size:15px;font-weight:700;color:var(--text-sub);}
+#todayOverview .to-desc{font-size:11px;color:var(--text-sub);margin-left:auto;}
+#todayOverview .to-progress{height:6px;border-radius:999px;background:var(--pink-100);overflow:hidden;margin-top:9px;}
+#todayOverview .to-progress>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink-300),var(--pink-600));transition:width .25s ease;}
+#todayOverview .to-sub{font-size:11px;color:var(--text-sub);margin-top:6px;}
+#todayOverview .to-drink{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;font-weight:750;color:var(--pink-700);}
+/* 支付方式只在保存确认弹窗中选择；保留本单是否使用预存的手动勾选。 */
+#prepayUseRow{display:none!important;}
+#paymentMethod{display:none!important;}
+#prepayBalancePanel .prepay-toggle input{display:inline-grid!important;accent-color:var(--pink-600);width:17px;height:17px;flex:0 0 auto;}
+#prepayBalancePanel .prepay-toggle{display:flex!important;align-items:center;gap:8px;cursor:pointer!important;pointer-events:auto!important;}
+#prepayBalancePanel .prepay-toggle>span:first-of-type{font-weight:750;color:var(--pink-700);}
+</style>
+<script id="v1660-daily-goal-payment-final">
+(function(){
+  'use strict';
+  var MODE_KEY='dailyOverviewMode_v1660';
+  var GOAL_KEY='dailyOutputGoal_v1660';
+  var DISMISS_KEY='dailyOverviewDrinkDismissed_v1660';
+  var LAST_MODE_KEY='dailyOverviewLastMode_v1660';
+  function safeGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function safeSet(k,v){try{localStorage.setItem(k,String(v));}catch(e){}}
+  function today(){return typeof todayKey==='function'?todayKey():(function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();}
+  function goalValue(){var n=parseInt(safeGet(GOAL_KEY)||'0',10);return Number.isFinite(n)&&n>0?Math.min(9999,n):0;}
+  function modeValue(){var m=safeGet(MODE_KEY);return m==='goal'||m==='drink'?'goal': 'schedule';}
+  function countTodayOutput(day){
+    var total=0;
+    (Array.isArray(orders)?orders:[]).forEach(function(o){
+      if(typeof getOutputRecords!=='function')return;
+      getOutputRecords(o).forEach(function(r){if(r&&r.date===day)total+=Math.max(0,Number(r.qty)||0);});
+    });
+    return total;
+  }
+  function scheduleStats(day){
+    // 今日日程只统计今天必须完成的未完成图片：DDL 今天到期或已经逾期。
+    // 同一张图片即使同时符合 DDL 与加急条件，也只按订单剩余数量计一次。
+    var total=0,done=0,tomorrow=0,week=0;
+    function outputOn(o,key){
+      if(typeof getOutputRecords!=='function')return 0;
+      return getOutputRecords(o).reduce(function(sum,r){return sum+(r&&r.date===key?Math.max(0,Number(r.qty)||0):0);},0);
+    }
+    (Array.isArray(orders)?orders:[]).forEach(function(o){
+      var deadline=String(o.deadline||'');if(!deadline)return;
+      var qty=Math.max(1,parseInt(o.quantity,10)||1);
+      var records=typeof getOutputRecords==='function'?getOutputRecords(o):[];
+      var before=records.reduce(function(sum,r){return sum+(r&&r.date&&r.date<day?Math.max(0,Number(r.qty)||0):0);},0);
+      var todayDone=outputOn(o,day);
+      var remainingBeforeToday=Math.max(0,qty-before);
+      var remainingNow=Math.max(0,remainingBeforeToday-todayDone);
+      if(deadline<=day&&remainingBeforeToday>0){
+        total+=remainingBeforeToday;
+        done+=Math.min(remainingBeforeToday,todayDone);
+      }
+      var next=new Date(day+'T00:00:00');next.setDate(next.getDate()+1);
+      var nextKey=typeof dateKey==='function'?dateKey(next):'';
+      if(deadline===nextKey)tomorrow+=Math.max(0,qty-(typeof getOutputTotal==='function'?getOutputTotal(o):0));
+      var end=new Date(day+'T00:00:00');end.setDate(end.getDate()+(end.getDay()===0?0:7-end.getDay()));
+      var endKey=typeof dateKey==='function'?dateKey(end):day;
+      if(deadline>day&&deadline<=endKey)week+=Math.max(0,qty-(typeof getOutputTotal==='function'?getOutputTotal(o):0));
+    });
+    return {total:total,done:Math.min(total,done),remaining:Math.max(0,total-done),tomorrow:tomorrow,week:week};
+  }
+  function drinkText(day){
+    var saved=safeGet('dailyOverviewDrink_'+day);
+    if(saved)return saved;
+    var list=Array.isArray(window.DRINKS)?window.DRINKS:['奶茶','草莓牛奶','气泡水','果茶'];
+    var name=list[Math.floor(Math.random()*list.length)]||'喜欢的饮品';
+    safeSet('dailyOverviewDrink_'+day,name);return name;
+  }
+  function progressSignature(day,done,goal,stats){return [day,done,goal,stats.total,stats.done,stats.remaining].join('|');}
+  function render(){
+    var el=document.getElementById('todayOverview');if(!el)return;
+    var day=today(),goal=goalValue(),done=countTodayOutput(day),stats=scheduleStats(day);
+    var goalComplete=goal>0&&done>=goal;
+    var scheduleComplete=stats.total>0&&stats.remaining===0;
+    var completed=goalComplete||scheduleComplete;
+    var selected=modeValue();
+    if(completed){
+      var alreadyPlayed=safeGet('dailyOverviewDrinkAnimated_v1661')===day;
+      if(!alreadyPlayed)safeSet('dailyOverviewDrinkAnimated_v1661',day);
+      el.className='today-overview today-overview-complete';
+      el.innerHTML='<div class="to-drink '+(alreadyPlayed?'is-complete':'is-animate')+'"><span class="to-cup" role="button" aria-label="重新播放飲品动画">🥤<i class="to-bubble b1"></i><i class="to-bubble b2"></i><i class="to-bubble b3"></i></span><span class="to-drink-copy"><b>今天的任务完成了！</b><small>喝杯'+drinkText(day)+'奖励一下自己</small></span><span class="to-check">✓</span></div><div class="to-sub" style="text-align:center"><button type="button" class="to-action" data-progress>查看每日目标 / 今日日程</button><span class="to-replay-hint"> · 点击饮品可重新播放动画</span></div>';
+      var cup=el.querySelector('.to-cup');if(cup)cup.addEventListener('click',function(e){e.stopPropagation();cup.classList.remove('replay');void cup.offsetWidth;cup.classList.add('replay');});
+      var pb=el.querySelector('[data-progress]');if(pb)pb.addEventListener('click',function(e){e.stopPropagation();switchMode();});
+      el.onclick=function(e){if(e.target&&e.target.closest&&e.target.closest('button,.to-cup'))return;var b=el.querySelector('[data-progress]');if(b)b.click();};
+      el.title='任务已完成；点击饮品可重新播放动画';return;
+    }
+    var isGoal=selected==='goal';
+    var title=isGoal?'每日目标':'今日日程';
+    var current=isGoal?done:stats.done;
+    var total=isGoal?goal:stats.total;
+    var pct=total>0?Math.min(100,Math.round(current/total*100)):0;
+    var subtitle=isGoal?(goal>0?(current>=goal?'已完成每日目标':'今天实际出图 '+done+' 张'):'尚未设置目标'):
+      (stats.total>0?(stats.remaining>0?'还剩 '+stats.remaining+' 张待完成':'今日必须完成的图片已全部完成'):'今天没有必须完成的图片');
+    var html='<div class="to-head"><span class="to-title">'+title+'</span><span class="to-actions">';
+    html+='<button type="button" class="to-action" data-switch>'+ (isGoal?'查看今日日程':'查看每日目标') +'</button>';
+    if(isGoal)html+='<button type="button" class="to-action" data-goal>'+ (goal?'调整目标':'设置目标') +'</button>';
+    html+='</span></div>';
+    if(isGoal&&goal===0){
+      html+='<div class="to-main"><span class="to-current">'+done+'</span><span class="to-total">张已出图</span><span class="to-desc">每日目标可选设置</span></div>';
+    }else if(!isGoal&&stats.total===0){
+      html+='<div class="to-main"><span class="to-current">0</span><span class="to-total">张待完成</span><span class="to-desc">今天无必须交付任务</span></div>';
+    }else{
+      html+='<div class="to-main"><span class="to-current">'+current+'</span><span class="to-total">/ '+total+' 张</span><span class="to-desc">'+(isGoal?'今日已出图':'今日已完成')+'</span></div>';
+      html+='<div class="to-progress"><i style="width:'+pct+'%"></i></div>';
+    }
+    html+='<div class="to-sub">'+subtitle;
+    if(!isGoal&&stats.tomorrow>0)html+=' · 明天还有 '+stats.tomorrow+' 张';
+    if(!isGoal&&stats.week>stats.remaining)html+=' · 本周后续 '+stats.week+' 张';
+    html+=' · 点击切换模式</div>';
+    el.className='today-overview';el.innerHTML=html;
+    el.onclick=function(){switchMode();};
+    var sw=el.querySelector('[data-switch]');if(sw)sw.addEventListener('click',function(e){e.stopPropagation();switchMode();});
+    var gb=el.querySelector('[data-goal]');if(gb)gb.addEventListener('click',function(e){e.stopPropagation();setGoal();});
+    el.title='点击切换每日目标 / 今日日程';
+  }
+  function switchMode(){
+    var next=modeValue()==='goal'?'schedule':'goal';
+    safeSet(MODE_KEY,next);safeSet(LAST_MODE_KEY,next);
+    var day=today(),goal=goalValue(),done=countTodayOutput(day),stats=scheduleStats(day);
+    safeSet(DISMISS_KEY,progressSignature(day,done,goal,stats));
+    render();
+  }
+  function setGoal(){
+    var current=goalValue();
+    var raw=window.prompt('设置每日目标（张数）。输入 0 或留空可关闭每日目标。',current?String(current):'6');
+    if(raw===null)return;
+    raw=String(raw).trim();
+    if(raw===''){safeSet(GOAL_KEY,'0');}
+    else{
+      var n=Number(raw);
+      if(!Number.isInteger(n)||n<0||n>9999){if(typeof toast==='function')toast('请输入 0 到 9999 的整数');return;}
+      safeSet(GOAL_KEY,String(n));
+    }
+    safeSet(MODE_KEY,'goal');
+    render();
+  }
+  window.setDailyOutputGoal=setGoal;
+  window.renderTodayOverview=render;
+  window.toggleTodayOverviewMode=switchMode;
+
+  /* 预存永远自动抵扣：不显示勾选开关/手动金额输入，余额不足时只对剩余金额弹出支付选择。 */
+  function forceAutoPrepay(){
+    var checkbox=document.getElementById('usePrepay'),input=document.getElementById('prepayUseAmount');
+    var client=document.getElementById('clientId'),price=document.getElementById('price');
+    var amount=price?Math.max(0,Number(price.value)||0):0;
+    var available=0;
+    if(client&&client.value.trim()){
+      if(typeof availablePrepay==='function')available=availablePrepay(client.value.trim());
+      else if(typeof getPrepayBalance==='function')available=getPrepayBalance(client.value.trim());
+    }
+    var use=!!(checkbox&&checkbox.checked);
+    var deduct=use?Math.round(Math.min(amount,Math.max(0,Number(available)||0))*100)/100:0;
+    if(input){input.value=deduct.toFixed(2);try{prepayAmountTouched=true;}catch(e){}}
+    return {available:available,deduct:deduct,total:amount};
+  }
+  var oldUpdate=window.updatePrepayPanel;
+  window.updatePrepayPanel=function(){
+    forceAutoPrepay();
+    if(typeof oldUpdate==='function')oldUpdate.apply(this,arguments);
+    var panel=document.getElementById('prepayBalancePanel');
+    var checkbox=document.getElementById('usePrepay');
+    var input=document.getElementById('prepayUseAmount');
+    var row=document.getElementById('prepayUseRow');
+    var method=document.getElementById('paymentMethod');
+    var client=document.getElementById('clientId');
+    if(input){var st=forceAutoPrepay();input.value=st.deduct.toFixed(2);}
+    if(row)row.style.display='none';
+    if(method&&method.parentElement)method.parentElement.style.display='none';
+    if(checkbox){checkbox.style.display='inline-grid';checkbox.disabled=!(client&&client.value.trim()&&st.available>0);var label=checkbox.closest('.prepay-toggle');if(label){var first=label.querySelector('span');if(first)first.textContent='本单使用预存';}}
+    if(panel&&client&&client.value.trim()){
+      var st2=forceAutoPrepay();
+      if(st2.available>0){panel.classList.add('show');var txt=document.getElementById('prepayBalanceText');if(txt)txt.textContent='¥'+Number(st2.available).toFixed(2);var preview=document.getElementById('prepayPreview');if(preview)preview.textContent=st2.total>0?'自动抵扣 ¥'+st2.deduct.toFixed(2)+(st2.total>st2.deduct?'，剩余 ¥'+(st2.total-st2.deduct).toFixed(2)+' 保存时选择支付方式':'，无需其他支付'):'等待订单金额';}
+      else panel.classList.remove('show');
+    }
+  };
+  var previousSave=window.saveOrder;
+  window.saveOrder=function(){
+    forceAutoPrepay();
+    return previousSave.apply(this,arguments);
+  };
+  function removeInlinePaymentUI(){
+    var method=document.getElementById('paymentMethod');
+    if(method&&method.parentElement){method.parentElement.style.display='none';}
+    var checkbox=document.getElementById('usePrepay');
+    if(checkbox){checkbox.style.display='inline-grid';var label=checkbox.closest('.prepay-toggle');if(label){var first=label.querySelector('span');if(first)first.textContent='本单使用预存';}}
+    var row=document.getElementById('prepayUseRow');if(row)row.style.display='none';
+  }
+  document.addEventListener('input',function(e){if(e.target&&['clientId','price'].indexOf(e.target.id)>=0){forceAutoPrepay();if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();}});
+  document.addEventListener('change',function(e){if(e.target&&e.target.id==='usePrepay'){forceAutoPrepay();if(typeof window.updatePrepayPanel==='function')window.updatePrepayPanel();}});
+  document.addEventListener('DOMContentLoaded',function(){removeInlinePaymentUI();render();});
+  if(document.readyState!=='loading'){removeInlinePaymentUI();render();}
+  /* 页面跨午夜打开时自动刷新当天的目标与完成状态。 */
+  setInterval(function(){render();},60000);
+})();
+</script>
+
+<style id="v1661-drink-animation-and-unified-modals">
+/* 完成饮品动画：卡片、饮品弹跳、气泡与星点 */
+#todayOverview.today-overview-complete{overflow:hidden;}
+#todayOverview .to-drink{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;min-height:64px;padding:4px 8px;}
+#todayOverview .to-cup{position:relative;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:17px;background:var(--pink-50);font-size:30px;cursor:pointer;flex:0 0 auto;}
+#todayOverview .to-drink-copy{display:flex;flex-direction:column;gap:4px;min-width:0;}
+#todayOverview .to-drink-copy b{font-size:14px;font-weight:850;color:var(--pink-700);}
+#todayOverview .to-drink-copy small{font-size:11px;color:var(--text-sub);}
+#todayOverview .to-check{font-size:19px;color:var(--pink-600);font-weight:900;}
+#todayOverview .to-bubble{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--pink-300);opacity:0;}
+#todayOverview .to-bubble.b1{left:5px;top:8px}#todayOverview .to-bubble.b2{right:4px;top:12px}#todayOverview .to-bubble.b3{right:8px;bottom:5px}
+#todayOverview .to-drink.is-animate .to-cup{animation:toCupPop .72s cubic-bezier(.2,.8,.25,1.25) both;}
+#todayOverview .to-drink.is-animate .to-bubble{animation:toBubble 1s ease-out .18s both;}
+#todayOverview .to-drink.is-animate .to-drink-copy{animation:toTextIn .55s ease-out .15s both;}
+#todayOverview .to-cup.replay{animation:toCupPop .72s cubic-bezier(.2,.8,.25,1.25) both;}
+#todayOverview .to-cup.replay .to-bubble{animation:toBubble 1s ease-out .18s both;}
+#todayOverview.today-overview-complete{animation:toCardGlow .85s ease-out both;}
+@keyframes toCupPop{0%{transform:translateY(22px) scale(.55) rotate(-12deg);opacity:0}65%{transform:translateY(-5px) scale(1.12) rotate(5deg);opacity:1}100%{transform:translateY(0) scale(1) rotate(0)}}
+@keyframes toBubble{0%{transform:translateY(10px) scale(.3);opacity:0}35%{opacity:1}100%{transform:translateY(-22px) scale(1.25);opacity:0}}
+@keyframes toTextIn{from{transform:translateY(7px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes toCardGlow{0%{box-shadow:0 0 0 rgba(240,120,160,0)}45%{box-shadow:0 0 0 5px var(--pink-50)}100%{box-shadow:0 0 0 rgba(240,120,160,0)}}
+@media(prefers-reduced-motion:reduce){#todayOverview .to-drink.is-animate *,#todayOverview.today-overview-complete,#todayOverview .to-cup.replay{animation:none!important}}
+
+/* 全局弹窗统一：不改变各弹窗内部功能与布局，只统一容器、标题、关闭键、按钮和遮罩。 */
+.modal{background:rgba(35,25,30,.38)!important;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);}
+.modal .modal-content{background:var(--card-bg)!important;color:var(--text-main)!important;border:1px solid var(--card-border)!important;border-radius:23px!important;box-shadow:0 18px 52px rgba(50,25,38,.16)!important;}
+.modal .modal-content::before{background:var(--pink-200)!important;border-radius:999px!important;}
+.modal .modal-header{align-items:center;gap:12px;margin-bottom:16px!important;}
+.modal .modal-header h2{color:var(--text-main)!important;font-size:17px!important;font-weight:800!important;}
+.modal .modal-close{width:32px!important;height:32px!important;min-width:32px!important;border-radius:50%!important;background:var(--pink-50)!important;color:var(--pink-700)!important;border:1px solid var(--pink-100)!important;font-size:18px!important;}
+.modal .modal-actions{display:flex;align-items:center;gap:8px;margin-top:16px!important;}
+.modal .modal-actions button,.modal .modal-content>button.btn-save,.modal .modal-content>button.btn-cancel{min-height:39px;border-radius:13px!important;font-family:inherit;font-weight:750!important;}
+.modal .modal-actions .btn-save{background:var(--pink-600)!important;color:#fff!important;border:1px solid var(--pink-600)!important;box-shadow:none!important;}
+.modal .modal-actions .btn-cancel{background:var(--pink-50)!important;color:var(--pink-700)!important;border:1px solid var(--pink-200)!important;box-shadow:none!important;}
+.modal input,.modal select,.modal textarea{border-radius:11px!important;border-color:var(--card-border)!important;}
+.modal.center .modal-content{border-radius:23px!important;}
+@media(max-width:480px){.modal:not(.center) .modal-content{border-radius:23px 23px 0 0!important}.modal.center .modal-content{width:calc(100% - 32px)!important;max-width:420px!important;padding:20px 17px 17px!important}}
+</style>
+<script id="v1661-final-prepay-and-refresh">
+(function(){
+  'use strict';
+  function money(v){var n=Number(v);return Number.isFinite(n)?Math.max(0,n):0;}
+  function update(){
+    var panel=document.getElementById('prepayBalancePanel'),text=document.getElementById('prepayBalanceText'),preview=document.getElementById('prepayPreview');
+    var checkbox=document.getElementById('usePrepay'),input=document.getElementById('prepayUseAmount'),clientEl=document.getElementById('clientId'),priceEl=document.getElementById('price');
+    if(!checkbox)return;
+    var client=clientEl?String(clientEl.value||'').trim():'',balance=client&&typeof getPrepayBalance==='function'?money(getPrepayBalance(client)):0;
+    var editing=(typeof editingOrderId!=='undefined'&&editingOrderId&&Array.isArray(orders))?orders.find(function(o){return String(o.id)===String(editingOrderId);}):null;
+    if(editing&&(editing.prepayClientId||editing.clientId)===client)balance+=money(editing.prepaidAmount);
+    var total=priceEl?money(priceEl.value):0;
+    checkbox.disabled=!(client&&balance>0);
+    if(!client||balance<=0)checkbox.checked=false;
+    var deduct=checkbox.checked?Math.round(Math.min(total,balance)*100)/100:0;
+    var direct=Math.max(0,Math.round((total-deduct)*100)/100);
+    if(input)input.value=deduct.toFixed(2);
+    var label=checkbox.closest?checkbox.closest('.prepay-toggle'):null;
+    if(label){label.style.display='flex';label.style.pointerEvents='auto';label.style.cursor=checkbox.disabled?'default':'pointer';label.classList.toggle('is-checked',checkbox.checked);var span=label.querySelector('span');if(span)span.textContent='本单使用预存';}
+    checkbox.style.display='inline-grid';
+    if(panel&&client&&balance>0){panel.classList.add('show');if(text)text.textContent='¥'+balance.toFixed(2);if(preview)preview.textContent=checkbox.checked?(total>0?'本单自动抵扣 ¥'+deduct.toFixed(2)+(direct>0?'，剩余应付 ¥'+direct.toFixed(2):'，已全额抵扣'):'填写订单金额后自动计算抵扣'):(total>0?'未勾选预存，本单直接支付 ¥'+total.toFixed(2):'可用预存 ¥'+balance.toFixed(2));}
+    else{if(panel)panel.classList.remove('show');if(preview)preview.textContent='';}
+    var row=document.getElementById('prepayUseRow');if(row)row.style.display='none';
+    var method=document.getElementById('paymentMethod');if(method&&method.parentElement)method.parentElement.style.display='none';
+  }
+  window.updatePrepayPanel=update;
+  document.addEventListener('input',function(e){if(e.target&&['clientId','price'].indexOf(e.target.id)>=0)update();});
+  document.addEventListener('change',function(e){if(e.target&&e.target.id==='usePrepay')update();});
+  var oldOpen=window.openForm;if(typeof oldOpen==='function')window.openForm=function(){var r=oldOpen.apply(this,arguments);setTimeout(update,0);return r;};
+  document.addEventListener('DOMContentLoaded',update);if(document.readyState!=='loading')update();
+  if(typeof window.renderTodayOverview==='function'){
+    var oldRender=window.renderTodayOverview;window.renderTodayOverview=function(){return oldRender.apply(this,arguments);};
+  }
+  var version=document.querySelector('.settings-version');if(version)version.textContent='v1.6.61';
+})();
+</script>
